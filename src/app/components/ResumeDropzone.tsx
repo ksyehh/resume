@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { LockClosedIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -12,6 +14,7 @@ import addPdfSrc from "public/assets/add-pdf.svg";
 import Image from "next/image";
 import { cx } from "lib/cx";
 import { deepClone } from "lib/deep-clone";
+import { useLocale } from "lib/i18n/LocaleProvider";
 
 const defaultFileState = {
   name: "",
@@ -28,6 +31,7 @@ export const ResumeDropzone = ({
   className?: string;
   playgroundView?: boolean;
 }) => {
+  const { t } = useLocale();
   const [file, setFile] = useState(defaultFileState);
   const [isHoveredOnDropzone, setIsHoveredOnDropzone] = useState(false);
   const [hasNonPdfFile, setHasNonPdfFile] = useState(false);
@@ -79,6 +83,7 @@ export const ResumeDropzone = ({
     if (getHasUsedAppBefore()) {
       const sections = Object.keys(settings.formToShow) as ShowForm[];
       const sectionToFormToShow: Record<ShowForm, boolean> = {
+        personalSummary: resume.personalSummary.descriptions.length > 0,
         workExperiences: resume.workExperiences.length > 0,
         educations: resume.educations.length > 0,
         projects: resume.projects.length > 0,
@@ -97,7 +102,7 @@ export const ResumeDropzone = ({
   return (
     <div
       className={cx(
-        "flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 ",
+        "flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6",
         isHoveredOnDropzone && "border-sky-400",
         playgroundView ? "pb-6 pt-4" : "py-12",
         className
@@ -119,7 +124,7 @@ export const ResumeDropzone = ({
           <Image
             src={addPdfSrc}
             className="mx-auto h-14 w-14"
-            alt="Add pdf"
+            alt={t("dropzone.addPdfAlt")}
             aria-hidden="true"
             priority
           />
@@ -132,11 +137,11 @@ export const ResumeDropzone = ({
                 !playgroundView && "text-lg font-semibold"
               )}
             >
-              Browse a pdf file or drop it here
+              {t("dropzone.browseOrDrop")}
             </p>
             <p className="flex text-sm text-gray-500">
               <LockClosedIcon className="mr-1 mt-1 h-3 w-3 text-gray-400" />
-              File data is used locally and never leaves your browser
+              {t("dropzone.privacyNote")}
             </p>
           </>
         ) : (
@@ -147,7 +152,7 @@ export const ResumeDropzone = ({
             <button
               type="button"
               className="outline-theme-blue rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-              title="Remove file"
+              title={t("dropzone.removeFile")}
               onClick={onRemove}
             >
               <XMarkIcon className="h-6 w-6" />
@@ -163,7 +168,7 @@ export const ResumeDropzone = ({
                   playgroundView ? "border" : "bg-primary"
                 )}
               >
-                Browse file
+                {t("dropzone.browseFile")}
                 <input
                   type="file"
                   className="sr-only"
@@ -172,7 +177,7 @@ export const ResumeDropzone = ({
                 />
               </label>
               {hasNonPdfFile && (
-                <p className="mt-6 text-red-400">Only pdf file is supported</p>
+                <p className="mt-6 text-red-400">{t("dropzone.onlyPdf")}</p>
               )}
             </>
           ) : (
@@ -183,12 +188,16 @@ export const ResumeDropzone = ({
                   className="btn-primary"
                   onClick={onImportClick}
                 >
-                  Import and Continue <span aria-hidden="true">→</span>
+                  {t("dropzone.importContinue")}{" "}
+                  <span aria-hidden="true">→</span>
                 </button>
               )}
-              <p className={cx(" text-gray-500", !playgroundView && "mt-6")}>
-                Note: {!playgroundView ? "Import" : "Parser"} works best on
-                single column resume
+              <p className={cx("text-gray-500", !playgroundView && "mt-6")}>
+                {t("dropzone.notePrefix")}{" "}
+                {!playgroundView
+                  ? t("dropzone.noteImport")
+                  : t("dropzone.noteParser")}{" "}
+                {t("dropzone.noteSuffix")}
               </p>
             </>
           )}

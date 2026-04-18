@@ -1,12 +1,52 @@
-// Getting pdfjs to work is tricky. The following 3 lines would make it work
+// Getting pdfjs to work is tricky.
 // https://stackoverflow.com/a/63486898/7699841
 import * as pdfjs from "pdfjs-dist";
-// @ts-ignore
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 import type { TextItem as PdfjsTextItem } from "pdfjs-dist/types/src/display/api";
 import type { TextItem, TextItems } from "lib/parse-resume-from-pdf/types";
+import { normalizePdfText } from "lib/parse-resume-from-pdf/normalize-text";
+
+/** Keep in sync with package.json dependency `pdfjs-dist`. */
+const PDFJS_DIST_VERSION = "3.7.107";
+
+let pdfWorkerConfigured = false;
+
+/** Browser: webpack worker chunk URL. Node (e.g. `npm run eval:zh-resumes`): file URL to pdf.worker.min.js. */
+function ensurePdfjsWorker(): void {
+  if (pdfWorkerConfigured) return;
+  pdfWorkerConfigured = true;
+
+  if (typeof window !== "undefined") {
+    // webpack resolves worker entry to a URL string (see pdf.worker.entry.js).
+    // eslint-disable-next-line -- pdfjs worker bootstrap
+    const src = require("pdfjs-dist/build/pdf.worker.entry") as string;
+    pdfjs.GlobalWorkerOptions.workerSrc = src;
+  } else {
+    // eslint-disable-next-line -- Node-only path bootstrap for eval scripts
+    const { join } = require("path") as typeof import("path");
+    // eslint-disable-next-line -- Node-only path bootstrap for eval scripts
+    const { pathToFileURL } = require("url") as typeof import("url");
+    pdfjs.GlobalWorkerOptions.workerSrc = pathToFileURL(
+      join(process.cwd(), "node_modules/pdfjs-dist/build/pdf.worker.min.js")
+    ).href;
+  }
+}
+
+/**
+ * Same-origin assets from `public/pdfjs/` (populated by `npm postinstall` → scripts/copy-pdfjs-assets.mjs).
+ * Falls back to CDN when `window` is unavailable (e.g. rare Node contexts).
+ */
+function getPdfJsAssetBaseUrl(): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return `${window.location.origin}/pdfjs/`;
+  }
+  return `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_DIST_VERSION}/`;
+}
+
+export type ReadPdfOptions = {
+  /** When set (e.g. Node eval script), used for cmaps / standard_fonts instead of window origin or CDN. */
+  pdfJsAssetBaseUrl?: string;
+};
 
 /**
  * Step 1: Read pdf and output textItems by concatenating results from each page.
@@ -21,8 +61,20 @@ import type { TextItem, TextItems } from "lib/parse-resume-from-pdf/types";
  *     const textItems = await readPdf(fileUrl);
  * }
  */
-export const readPdf = async (fileUrl: string): Promise<TextItems> => {
-  const pdfFile = await pdfjs.getDocument(fileUrl).promise;
+export const readPdf = async (
+  fileUrl: string,
+  options?: ReadPdfOptions
+): Promise<TextItems> => {
+  ensurePdfjsWorker();
+  const base = options?.pdfJsAssetBaseUrl ?? getPdfJsAssetBaseUrl();
+  const pdfFile = await pdfjs
+    .getDocument({
+      url: fileUrl,
+      cMapUrl: `${base}cmaps/`,
+      cMapPacked: true,
+      standardFontDataUrl: `${base}standard_fonts/`,
+    })
+    .promise;
   let textItems: TextItems = [];
 
   for (let i = 1; i <= pdfFile.numPages; i++) {
@@ -54,7 +106,7 @@ export const readPdf = async (fileUrl: string): Promise<TextItems> => {
       // since non system font name by default is a loaded name, e.g. "g_d8_f1"
       // Reference: https://github.com/mozilla/pdf.js/pull/15659
       const fontObj = commonObjs.get(pdfFontName);
-      const fontName = fontObj.name;
+      const fontName = fontObj?.name ?? pdfFontName;
 
       // pdfjs reads a "-" as "-­‐" in the resume example. This is to revert it.
       // Note "-­‐" is "-&#x00AD;‐" with a soft hyphen in between. It is not the same as "--"
@@ -84,6 +136,10 @@ export const readPdf = async (fileUrl: string): Promise<TextItems> => {
   const isEmptySpace = (textItem: TextItem) =>
     !textItem.hasEOL && textItem.text.trim() === "";
   textItems = textItems.filter((textItem) => !isEmptySpace(textItem));
+
+  for (const item of textItems) {
+    item.text = normalizePdfText(item.text);
+  }
 
   return textItems;
 };

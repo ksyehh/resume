@@ -9,6 +9,10 @@ import {
   hasOnlyLettersSpacesAmpersands,
   isBold,
 } from "lib/parse-resume-from-pdf/extract-resume-from-sections/lib/common-features";
+import {
+  SECTION_TITLE_ZH_KEYWORDS,
+  stripChineseSectionNumberPrefix,
+} from "lib/parse-resume-from-pdf/zh-resume-keywords";
 
 export const PROFILE_SECTION: ResumeKey = "profile";
 
@@ -75,6 +79,17 @@ const isSectionTitle = (line: Line, lineNumber: number) => {
   // The main heuristic to determine a section title is to check if the text is double emphasized
   // to be both bold and all uppercase, which is generally true for a well formatted resume
   if (isBold(textItem) && hasLetterAndIsAllUpperCase(textItem)) {
+    return true;
+  }
+
+  const textZh = textItem.text.trim();
+  const textZhForMatch = stripChineseSectionNumberPrefix(textZh) || textZh;
+  if (
+    textZh.length > 0 &&
+    textZh.length <= 40 &&
+    /[\u3400-\u9FFF]/.test(textZh) &&
+    SECTION_TITLE_ZH_KEYWORDS.some((kw) => textZhForMatch.includes(kw))
+  ) {
     return true;
   }
 

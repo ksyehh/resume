@@ -95,7 +95,7 @@ const ResumeIframe = ({
           height: `${height}px`,
           transform: `scale(${scale})`,
         }}
-        className={`origin-top-left bg-white shadow-lg`}
+        className="origin-top-left bg-white shadow-lg"
       >
         <Frame
           style={{ width: "100%", height: "100%" }}

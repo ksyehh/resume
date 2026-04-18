@@ -35,8 +35,15 @@ export const ResumePDF = ({
   settings: Settings;
   isPDF?: boolean;
 }) => {
-  const { profile, workExperiences, educations, projects, skills, custom } =
-    resume;
+  const {
+    profile,
+    workExperiences,
+    educations,
+    projects,
+    skills,
+    personalSummary,
+    custom,
+  } = resume;
   const { name } = profile;
   const {
     fontFamily,
@@ -52,6 +59,14 @@ export const ResumePDF = ({
   const showFormsOrder = formsOrder.filter((form) => formToShow[form]);
 
   const formTypeToComponent: { [type in ShowForm]: () => JSX.Element } = {
+    personalSummary: () => (
+      <ResumePDFCustom
+        heading={formToHeading["personalSummary"]}
+        custom={personalSummary}
+        themeColor={themeColor}
+        showBulletPoints={showBulletPoints["personalSummary"]}
+      />
+    ),
     workExperiences: () => (
       <ResumePDFWorkExperience
         heading={formToHeading["workExperiences"]}

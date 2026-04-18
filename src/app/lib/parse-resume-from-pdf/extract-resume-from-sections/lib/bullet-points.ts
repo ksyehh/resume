@@ -25,6 +25,13 @@ export const BULLET_POINTS = [
   "⬤",
   "⚬",
   "○",
+  // Common on Chinese / Word templates
+  "·",
+  "※",
+  "◇",
+  "▪",
+  "‣",
+  "＊",
 ];
 
 /**
@@ -103,6 +110,14 @@ const isWord = (str: string) => /^[^0-9]+$/.test(str);
 const hasAtLeast8Words = (item: TextItem) =>
   item.text.split(/\s/).filter(isWord).length >= 8;
 
+/** Dense CJK line (no spaces) often used as bullet paragraph on CN resumes */
+const hasLongChineseLine = (item: TextItem) => {
+  const t = item.text.replace(/\s/g, "");
+  if (t.length < 28) return false;
+  const cjk = (t.match(/[\u3400-\u9FFF]/g) || []).length;
+  return cjk >= 18;
+};
+
 export const getDescriptionsLineIdx = (lines: Lines): number | undefined => {
   // The main heuristic to determine descriptions is to check if has bullet point
   let idx = getFirstBulletPointLineIdx(lines);
@@ -112,7 +127,10 @@ export const getDescriptionsLineIdx = (lines: Lines): number | undefined => {
   if (idx === undefined) {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      if (line.length === 1 && hasAtLeast8Words(line[0])) {
+      if (
+        line.length === 1 &&
+        (hasAtLeast8Words(line[0]) || hasLongChineseLine(line[0]))
+      ) {
         idx = i;
         break;
       }

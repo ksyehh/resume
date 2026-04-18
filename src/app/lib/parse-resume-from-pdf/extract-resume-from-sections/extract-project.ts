@@ -4,6 +4,7 @@ import type {
   ResumeSectionToLines,
 } from "lib/parse-resume-from-pdf/types";
 import { getSectionLinesByKeywords } from "lib/parse-resume-from-pdf/extract-resume-from-sections/lib/get-section-lines";
+import { SECTION_KEYWORDS_PROJECTS } from "lib/parse-resume-from-pdf/zh-resume-keywords";
 import {
   DATE_FEATURE_SETS,
   getHasText,
@@ -19,7 +20,7 @@ import {
 export const extractProject = (sections: ResumeSectionToLines) => {
   const projects: ResumeProject[] = [];
   const projectsScores = [];
-  const lines = getSectionLinesByKeywords(sections, ["project"]);
+  const lines = getSectionLinesByKeywords(sections, SECTION_KEYWORDS_PROJECTS);
   const subsections = divideSectionIntoSubsections(lines);
 
   for (const subsectionLines of subsections) {

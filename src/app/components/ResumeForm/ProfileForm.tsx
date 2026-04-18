@@ -1,10 +1,14 @@
+"use client";
+
 import { BaseForm } from "components/ResumeForm/Form";
 import { Input, Textarea } from "components/ResumeForm/Form/InputGroup";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { changeProfile, selectProfile } from "lib/redux/resumeSlice";
 import { ResumeProfile } from "lib/redux/types";
+import { useTranslations } from "lib/i18n/LocaleProvider";
 
 export const ProfileForm = () => {
+  const tp = useTranslations("resumeForm.profile");
   const profile = useAppSelector(selectProfile);
   const dispatch = useAppDispatch();
   const { name, email, phone, url, summary, location } = profile;
@@ -17,50 +21,50 @@ export const ProfileForm = () => {
     <BaseForm>
       <div className="grid grid-cols-6 gap-3">
         <Input
-          label="Name"
+          label={tp("name")}
           labelClassName="col-span-full"
           name="name"
-          placeholder="Sal Khan"
+          placeholder={tp("placeholderName")}
           value={name}
           onChange={handleProfileChange}
         />
         <Textarea
-          label="Objective"
+          label={tp("objective")}
           labelClassName="col-span-full"
           name="summary"
-          placeholder="Entrepreneur and educator obsessed with making education free for anyone"
+          placeholder={tp("placeholderObjective")}
           value={summary}
           onChange={handleProfileChange}
         />
         <Input
-          label="Email"
+          label={tp("email")}
           labelClassName="col-span-4"
           name="email"
-          placeholder="hello@khanacademy.org"
+          placeholder={tp("placeholderEmail")}
           value={email}
           onChange={handleProfileChange}
         />
         <Input
-          label="Phone"
+          label={tp("phone")}
           labelClassName="col-span-2"
           name="phone"
-          placeholder="(123)456-7890"
+          placeholder={tp("placeholderPhone")}
           value={phone}
           onChange={handleProfileChange}
         />
         <Input
-          label="Website"
+          label={tp("website")}
           labelClassName="col-span-4"
           name="url"
-          placeholder="linkedin.com/in/khanacademy"
+          placeholder={tp("placeholderWebsite")}
           value={url}
           onChange={handleProfileChange}
         />
         <Input
-          label="Location"
+          label={tp("location")}
           labelClassName="col-span-2"
           name="location"
-          placeholder="NYC, NY"
+          placeholder={tp("placeholderLocation")}
           value={location}
           onChange={handleProfileChange}
         />

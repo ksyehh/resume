@@ -12,10 +12,14 @@ import {
   hasLetterAndIsAllUpperCase,
 } from "lib/parse-resume-from-pdf/extract-resume-from-sections/lib/common-features";
 import { getTextWithHighestFeatureScore } from "lib/parse-resume-from-pdf/extract-resume-from-sections/lib/feature-scoring-system";
+import {
+  SECTION_KEYWORDS_OBJECTIVE,
+  SECTION_KEYWORDS_SUMMARY,
+} from "lib/parse-resume-from-pdf/zh-resume-keywords";
 
-// Name
+// Name (Latin + CJK letters, spaces, period, common name separators)
 export const matchOnlyLetterSpaceOrPeriod = (item: TextItem) =>
-  item.text.match(/^[a-zA-Z\s\.]+$/);
+  item.text.match(/^[\p{L}\s\.\u00b7\u30fb]+$/u);
 
 // Email
 // Simple email regex: xxx@xxx.xxx (xxx = anything not space)
@@ -26,6 +30,10 @@ const hasAt = (item: TextItem) => item.text.includes("@");
 // Simple phone regex that matches (xxx)-xxx-xxxx where () and - are optional, - can also be space
 export const matchPhone = (item: TextItem) =>
   item.text.match(/\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}/);
+
+/** Mainland mobile: optional +86, then 1[3-9] + 9 digits with optional separators */
+export const matchPhoneChina = (item: TextItem) =>
+  item.text.match(/(?:\+86[\s-]?)?1[3-9]\d(?:[\s-]?\d){8}/);
 const hasParenthesis = (item: TextItem) => /\([0-9]+\)/.test(item.text);
 
 // Location
@@ -86,8 +94,9 @@ const EMAIL_FEATURE_SETS: FeatureSet[] = [
   [has4OrMoreWords, -4], // Summary
 ];
 
-// Phone -> match phone regex (xxx)-xxx-xxxx
+// Phone -> mainland China first, then US-style
 const PHONE_FEATURE_SETS: FeatureSet[] = [
+  [matchPhoneChina, 5, true],
   [matchPhone, 4, true],
   [hasLetter, -4], // Name, Email, Location, Url, Summary
 ];
@@ -153,12 +162,18 @@ export const extractProfile = (sections: ResumeSectionToLines) => {
     true
   );
 
-  const summaryLines = getSectionLinesByKeywords(sections, ["summary"]);
+  const summaryLines = getSectionLinesByKeywords(
+    sections,
+    SECTION_KEYWORDS_SUMMARY
+  );
   const summarySection = summaryLines
     .flat()
     .map((textItem) => textItem.text)
     .join(" ");
-  const objectiveLines = getSectionLinesByKeywords(sections, ["objective"]);
+  const objectiveLines = getSectionLinesByKeywords(
+    sections,
+    SECTION_KEYWORDS_OBJECTIVE
+  );
   const objectiveSection = objectiveLines
     .flat()
     .map((textItem) => textItem.text)

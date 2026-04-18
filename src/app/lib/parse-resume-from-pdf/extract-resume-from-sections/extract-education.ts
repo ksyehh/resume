@@ -17,6 +17,10 @@ import {
   getBulletPointsFromLines,
   getDescriptionsLineIdx,
 } from "lib/parse-resume-from-pdf/extract-resume-from-sections/lib/bullet-points";
+import {
+  SECTION_KEYWORDS_COURSES,
+  SECTION_KEYWORDS_EDUCATION,
+} from "lib/parse-resume-from-pdf/zh-resume-keywords";
 
 /**
  *              Unique Attribute
@@ -27,14 +31,52 @@ import {
 
 // prettier-ignore
 const SCHOOLS = ['College', 'University', 'Institute', 'School', 'Academy', 'BASIS', 'Magnet']
+const CN_SCHOOL_MARKERS = [
+  "大学",
+  "学院",
+  "学校",
+  "中学",
+  "研究院",
+  "研究所",
+  "师范",
+  "职业技术",
+  "高级中学",
+];
+
 const hasSchool = (item: TextItem) =>
   SCHOOLS.some((school) => item.text.includes(school));
+const hasSchoolCn = (item: TextItem) =>
+  CN_SCHOOL_MARKERS.some((m) => item.text.includes(m));
+
 // prettier-ignore
 const DEGREES = ["Associate", "Bachelor", "Master", "PhD", "Ph."];
+const CN_DEGREE_MARKERS = [
+  "本科",
+  "硕士",
+  "博士",
+  "学士",
+  "专科",
+  "研究生",
+  "MBA",
+  "理学",
+  "工学",
+  "文学",
+  "法学",
+  "医学",
+  "管理学",
+];
+
 const hasDegree = (item: TextItem) =>
   DEGREES.some((degree) => item.text.includes(degree)) ||
-  /[ABM][A-Z\.]/.test(item.text); // Match AA, B.S., MBA, etc.
+  /[ABM][A-Z\.]/.test(item.text) ||
+  CN_DEGREE_MARKERS.some((d) => item.text.includes(d)) ||
+  /学士|硕士|博士学位/.test(item.text);
+
 const matchGPA = (item: TextItem) => item.text.match(/[0-4]\.\d{1,2}/);
+const matchGPAChinese = (item: TextItem) =>
+  item.text.match(
+    /(?:GPA|gpa|绩点|均分|平均分)[：:\s]*([0-4](?:\.\d{1,2})?|\d{1,2}(?:\.\d{1,2})?)/i
+  );
 const matchGrade = (item: TextItem) => {
   const grade = parseFloat(item.text);
   if (Number.isFinite(grade) && grade <= 110) {
@@ -45,6 +87,7 @@ const matchGrade = (item: TextItem) => {
 
 const SCHOOL_FEATURE_SETS: FeatureSet[] = [
   [hasSchool, 4],
+  [hasSchoolCn, 3],
   [hasDegree, -4],
   [hasNumber, -4],
 ];
@@ -57,6 +100,7 @@ const DEGREE_FEATURE_SETS: FeatureSet[] = [
 
 const GPA_FEATURE_SETS: FeatureSet[] = [
   [matchGPA, 4, true],
+  [matchGPAChinese, 4, true],
   [matchGrade, 3, true],
   [hasComma, -3],
   [hasLetter, -4],
@@ -65,7 +109,7 @@ const GPA_FEATURE_SETS: FeatureSet[] = [
 export const extractEducation = (sections: ResumeSectionToLines) => {
   const educations: ResumeEducation[] = [];
   const educationsScores = [];
-  const lines = getSectionLinesByKeywords(sections, ["education"]);
+  const lines = getSectionLinesByKeywords(sections, SECTION_KEYWORDS_EDUCATION);
   const subsections = divideSectionIntoSubsections(lines);
   for (const subsectionLines of subsections) {
     const textItems = subsectionLines.flat();
@@ -103,7 +147,10 @@ export const extractEducation = (sections: ResumeSectionToLines) => {
   }
 
   if (educations.length !== 0) {
-    const coursesLines = getSectionLinesByKeywords(sections, ["course"]);
+    const coursesLines = getSectionLinesByKeywords(
+      sections,
+      SECTION_KEYWORDS_COURSES
+    );
     if (coursesLines.length !== 0) {
       educations[0].descriptions.push(
         "Courses: " +

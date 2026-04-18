@@ -44,9 +44,11 @@ export interface ResumeCustom {
 
 export interface Resume {
   profile: ResumeProfile;
+  /** 与 PDF / 表单展示顺序一致，供首页打字动画等按 Object.entries 遍历 */
+  personalSummary: ResumeCustom;
   workExperiences: ResumeWorkExperience[];
-  educations: ResumeEducation[];
   projects: ResumeProject[];
+  educations: ResumeEducation[];
   skills: ResumeSkills;
   custom: ResumeCustom;
 }

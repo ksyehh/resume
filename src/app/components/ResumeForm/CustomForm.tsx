@@ -1,3 +1,5 @@
+"use client";
+
 import { Form } from "components/ResumeForm/Form";
 import { BulletListIconButton } from "components/ResumeForm/Form/IconButton";
 import { BulletListTextarea } from "components/ResumeForm/Form/InputGroup";
@@ -7,8 +9,11 @@ import {
   selectShowBulletPoints,
   changeShowBulletPoints,
 } from "lib/redux/settingsSlice";
+import { useTranslations } from "lib/i18n/LocaleProvider";
 
 export const CustomForm = () => {
+  const tc = useTranslations("resumeForm.custom");
+  const ts = useTranslations("resumeForm.skills");
   const custom = useAppSelector(selectCustom);
   const dispatch = useAppDispatch();
   const { descriptions } = custom;
@@ -28,10 +33,10 @@ export const CustomForm = () => {
       <div className="col-span-full grid grid-cols-6 gap-3">
         <div className="relative col-span-full">
           <BulletListTextarea
-            label="Custom Textbox"
+            label={tc("customTextbox")}
             labelClassName="col-span-full"
             name="descriptions"
-            placeholder="Bullet points"
+            placeholder={ts("placeholderBullets")}
             value={descriptions}
             onChange={handleCustomChange}
             showBulletPoints={showBulletPoints}

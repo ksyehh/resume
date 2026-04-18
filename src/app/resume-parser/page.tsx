@@ -10,33 +10,24 @@ import { cx } from "lib/cx";
 import { Heading, Link, Paragraph } from "components/documentation";
 import { ResumeTable } from "resume-parser/ResumeTable";
 import { FlexboxSpacer } from "components/FlexboxSpacer";
-import { ResumeParserAlgorithmArticle } from "resume-parser/ResumeParserAlgorithmArticle";
+import { useTranslations } from "lib/i18n/LocaleProvider";
+import { interpolate } from "lib/i18n/get-message";
 
 const RESUME_EXAMPLES = [
   {
     fileUrl: "resume-example/laverne-resume.pdf",
-    description: (
-      <span>
-        Borrowed from University of La Verne Career Center -{" "}
-        <Link href="https://laverne.edu/careers/wp-content/uploads/sites/15/2010/12/Undergraduate-Student-Resume-Examples.pdf">
-          Link
-        </Link>
-      </span>
-    ),
+    laverneHref:
+      "https://laverne.edu/careers/wp-content/uploads/sites/15/2010/12/Undergraduate-Student-Resume-Examples.pdf",
   },
   {
     fileUrl: "resume-example/openresume-resume.pdf",
-    description: (
-      <span>
-        Created with OpenResume resume builder -{" "}
-        <Link href="/resume-builder">Link</Link>
-      </span>
-    ),
+    laverneHref: "",
   },
 ];
 
 const defaultFileUrl = RESUME_EXAMPLES[0]["fileUrl"];
 export default function ResumeParser() {
+  const tp = useTranslations("resumeParserPage");
   const [fileUrl, setFileUrl] = useState(defaultFileUrl);
   const [textItems, setTextItems] = useState<TextItems>([]);
   const lines = groupTextItemsIntoLines(textItems || []);
@@ -65,14 +56,8 @@ export default function ResumeParser() {
         <div className="flex px-6 text-gray-900 md:col-span-3 md:h-[calc(100vh-var(--top-nav-bar-height))] md:overflow-y-scroll">
           <FlexboxSpacer maxWidth={45} className="hidden md:block" />
           <section className="max-w-[600px] grow">
-            <Heading className="text-primary !mt-4">
-              Resume Parser Playground
-            </Heading>
-            <Paragraph smallMarginTop={true}>
-              This playground showcases the OpenResume resume parser and its
-              ability to parse information from a resume PDF. Click around the
-              PDF examples below to observe different parsing results.
-            </Paragraph>
+            <Heading className="text-primary !mt-4">{tp("title")}</Heading>
+            <Paragraph smallMarginTop={true}>{tp("intro")}</Paragraph>
             <div className="mt-3 flex gap-3">
               {RESUME_EXAMPLES.map((example, idx) => (
                 <article
@@ -90,21 +75,36 @@ export default function ResumeParser() {
                   }}
                   tabIndex={0}
                 >
-                  <h1 className="font-semibold">Resume Example {idx + 1}</h1>
+                  <h1 className="font-semibold">
+                    {interpolate(tp("resumeExample"), { n: idx + 1 })}
+                  </h1>
                   <p className="mt-2 text-sm text-gray-500">
-                    {example.description}
+                    {idx === 0 ? (
+                      <span>
+                        {tp("exampleBorrowedPrefix")}{" "}
+                        <Link
+                          href={example.laverneHref}
+                          aria-label={tp("laverneLinkAria")}
+                        >
+                          {tp("exampleBorrowedLink")}
+                        </Link>
+                      </span>
+                    ) : (
+                      <span>
+                        {tp("exampleBuiltPrefix")}{" "}
+                        <Link href="/resume-builder">
+                          {tp("exampleBorrowedLink")}
+                        </Link>
+                      </span>
+                    )}
                   </p>
                 </article>
               ))}
             </div>
             <Paragraph>
-              You can also{" "}
-              <span className="font-semibold">add your resume below</span> to
-              access how well your resume would be parsed by similar Application
-              Tracking Systems (ATS) used in job applications. The more
-              information it can parse out, the better it indicates the resume
-              is well formatted and easy to read. It is beneficial to have the
-              name and email accurately parsed at the very least.
+              {tp("paragraphAtsPrefix")}
+              <span className="font-semibold">{tp("paragraphAtsBold")}</span>
+              {tp("paragraphAtsSuffix")}
             </Paragraph>
             <div className="mt-3">
               <ResumeDropzone
@@ -115,15 +115,10 @@ export default function ResumeParser() {
               />
             </div>
             <Heading level={2} className="!mt-[1.2em]">
-              Resume Parsing Results
+              {tp("resultsHeading")}
             </Heading>
             <ResumeTable resume={resume} />
-            <ResumeParserAlgorithmArticle
-              textItems={textItems}
-              lines={lines}
-              sections={sections}
-            />
-            <div className="pt-24" />
+            <div className="pb-12" />
           </section>
         </div>
       </div>

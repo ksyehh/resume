@@ -33,7 +33,12 @@ export const groupTextItemsIntoLines = (textItems: TextItems): Lines => {
   // This creates many noises, where a single text item is divided into multiple
   // ones. This step is to merge adjacent text items if their distance is smaller
   // than a typical char width to filter out those noises.
-  const typicalCharWidth = getTypicalCharWidth(lines.flat());
+  const flatForWidth = lines.flat();
+  const typicalCharWidth = getTypicalCharWidth(flatForWidth);
+  const mergeGap =
+    typicalCharWidth *
+    (getCjkCharacterRatio(flatForWidth) > 0.2 ? 1.35 : 1);
+
   for (let line of lines) {
     // Start from the end of the line to make things easier to merge and delete
     for (let i = line.length - 1; i > 0; i--) {
@@ -41,7 +46,7 @@ export const groupTextItemsIntoLines = (textItems: TextItems): Lines => {
       const leftItem = line[i - 1];
       const leftItemXEnd = leftItem.x + leftItem.width;
       const distance = currentItem.x - leftItemXEnd;
-      if (distance <= typicalCharWidth) {
+      if (distance <= mergeGap) {
         if (shouldAddSpaceBetweenText(leftItem.text, currentItem.text)) {
           leftItem.text += " ";
         }
@@ -57,17 +62,47 @@ export const groupTextItemsIntoLines = (textItems: TextItems): Lines => {
   return lines;
 };
 
+const isCjkChar = (c: string) => /[\u3400-\u9FFF]/.test(c);
+const isLatinOrDigit = (c: string) => /[A-Za-z0-9]/.test(c);
+
 // Sometimes a space is lost while merging adjacent text items. This accounts for some of those cases
 const shouldAddSpaceBetweenText = (leftText: string, rightText: string) => {
+  if (!leftText.length || !rightText.length) {
+    return false;
+  }
   const leftTextEnd = leftText[leftText.length - 1];
   const rightTextStart = rightText[0];
+
+  if (
+    (isCjkChar(leftTextEnd) && isLatinOrDigit(rightTextStart)) ||
+    (isLatinOrDigit(leftTextEnd) && isCjkChar(rightTextStart))
+  ) {
+    return true;
+  }
+
   const conditions = [
-    [":", ",", "|", ".", ...BULLET_POINTS].includes(leftTextEnd) &&
+    [":", ",", "|", ".", "。", "，", "；", "：", "、"].includes(leftTextEnd) &&
       rightTextStart !== " ",
-    leftTextEnd !== " " && ["|", ...BULLET_POINTS].includes(rightTextStart),
+    leftTextEnd !== " " &&
+      ["|", "。", "，", ...BULLET_POINTS].includes(rightTextStart),
   ];
 
   return conditions.some((condition) => condition);
+};
+
+/** Share of CJK codepoints in all text (for merge gap tuning on Word-exported CN PDFs). */
+const getCjkCharacterRatio = (textItems: TextItems): number => {
+  let total = 0;
+  let cjk = 0;
+  for (const item of textItems) {
+    for (const ch of item.text) {
+      total++;
+      if (isCjkChar(ch)) {
+        cjk++;
+      }
+    }
+  }
+  return total === 0 ? 0 : cjk / total;
 };
 
 /**
@@ -125,6 +160,9 @@ const getTypicalCharWidth = (textItems: TextItems): number => {
     },
     [0, 0]
   );
+  if (numChars === 0) {
+    return 5;
+  }
   const typicalCharWidth = totalWidth / numChars;
 
   return typicalCharWidth;

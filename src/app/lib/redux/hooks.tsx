@@ -9,13 +9,15 @@ import {
   loadStateFromLocalStorage,
   saveStateToLocalStorage,
 } from "lib/redux/local-storage";
-import { initialResumeState, setResume } from "lib/redux/resumeSlice";
+import { resumeRehydrationDefaults, setResume } from "lib/redux/resumeSlice";
 import {
   initialSettings,
   setSettings,
   type Settings,
+  type ShowForm,
 } from "lib/redux/settingsSlice";
 import { deepMerge } from "lib/deep-merge";
+import { fillMissingFromDefaults } from "lib/redux/fill-missing-from-defaults";
 import type { Resume } from "lib/redux/types";
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -43,9 +45,13 @@ export const useSetInitialStore = () => {
       // backward compatibility, since new fields might be added to
       // the initial state over time.
       const mergedResumeState = deepMerge(
-        initialResumeState,
+        resumeRehydrationDefaults,
         state.resume
       ) as Resume;
+      fillMissingFromDefaults(
+        mergedResumeState as unknown as Record<string, unknown>,
+        resumeRehydrationDefaults as unknown as Record<string, unknown>
+      );
       dispatch(setResume(mergedResumeState));
     }
     if (state.settings) {
@@ -53,6 +59,17 @@ export const useSetInitialStore = () => {
         initialSettings,
         state.settings
       ) as Settings;
+      fillMissingFromDefaults(
+        mergedSettingsState as unknown as Record<string, unknown>,
+        initialSettings as unknown as Record<string, unknown>
+      );
+      const order = mergedSettingsState.formsOrder;
+      if (!order.includes("personalSummary" as ShowForm)) {
+        mergedSettingsState.formsOrder = [
+          "personalSummary",
+          ...order.filter((f) => f !== "personalSummary"),
+        ];
+      }
       dispatch(setSettings(mergedSettingsState));
     }
   }, []);

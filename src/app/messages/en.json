@@ -1,0 +1,216 @@
+{
+  "nav": {
+    "builder": "Builder",
+    "parser": "Parser",
+    "ariaSiteHeader": "Site Header",
+    "ariaSiteNav": "Site Nav Bar",
+    "srOpenResume": "OpenResume",
+    "logoAlt": "OpenResume Logo",
+    "githubIframeTitle": "GitHub"
+  },
+  "language": {
+    "switchToZh": "中文",
+    "switchToEn": "EN",
+    "ariaToggle": "Switch language"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "Create a professional",
+      "titleLine2": "resume easily",
+      "subtitle": "With this free, open-source, and powerful resume builder",
+      "cta": "Create Resume",
+      "noSignup": "No sign up required",
+      "parserTeaserPrefix": "Already have a resume? Test its ATS readability with the ",
+      "parserLink": "resume parser",
+      "parserTeaserSuffix": ""
+    },
+    "autoTyping": {
+      "personalSummary": "SUMMARY",
+      "workExperience": "WORK EXPERIENCE",
+      "education": "EDUCATION",
+      "project": "PROJECT EXPERIENCE",
+      "skills": "SKILLS",
+      "custom": "CUSTOM SECTION"
+    }
+  },
+  "resumeImport": {
+    "headingNew": "Import data from an existing resume",
+    "headingOverride": "Override data with a new resume",
+    "dontHaveHeading": "Don't have a resume yet?",
+    "createScratch": "Create from scratch",
+    "savedHeading": "You have data saved in browser from prior session",
+    "continueLabel": "Continue where I left off",
+    "orDivider": "or"
+  },
+  "dropzone": {
+    "browseOrDrop": "Browse a pdf file or drop it here",
+    "privacyNote": "File data is used locally and never leaves your browser",
+    "browseFile": "Browse file",
+    "onlyPdf": "Only pdf file is supported",
+    "importContinue": "Import and Continue",
+    "notePrefix": "Note: ",
+    "noteImport": "Import",
+    "noteParser": "Parser",
+    "noteSuffix": " works best on single column resume",
+    "removeFile": "Remove file",
+    "addPdfAlt": "Add pdf"
+  },
+  "resumeControlBar": {
+    "autoscale": "Autoscale",
+    "downloadResume": "Download Resume"
+  },
+  "resumeForm": {
+    "profile": {
+      "objectiveDetail": "Objective Detail",
+      "optional": "(Optional)",
+      "name": "Name",
+      "objective": "Objective",
+      "email": "Email",
+      "phone": "Phone",
+      "website": "Website",
+      "location": "Location",
+      "placeholderName": "Sal Khan",
+      "placeholderObjective": "Entrepreneur and educator obsessed with making education free for anyone",
+      "placeholderEmail": "hello@khanacademy.org",
+      "placeholderPhone": "(123)456-7890",
+      "placeholderWebsite": "linkedin.com/in/khanacademy",
+      "placeholderLocation": "NYC, NY"
+    },
+    "work": {
+      "addJob": "Add Job",
+      "deleteJob": "Delete job",
+      "company": "Company",
+      "jobTitle": "Job Title",
+      "date": "Date",
+      "description": "Description",
+      "placeholderCompany": "Khan Academy",
+      "placeholderJobTitle": "Software Engineer",
+      "placeholderDate": "Jun 2022 - Present",
+      "placeholderBullets": "Bullet points"
+    },
+    "education": {
+      "addSchool": "Add School",
+      "deleteSchool": "Delete school",
+      "school": "School",
+      "degreeMajor": "Degree & Major",
+      "gpa": "GPA",
+      "additionalInfo": "Additional Information (Optional)",
+      "placeholderSchool": "Cornell University",
+      "placeholderDate": "May 2018",
+      "placeholderDegree": "Bachelor of Science in Computer Engineering",
+      "placeholderGpa": "3.81",
+      "placeholderExtra": "Free paragraph space to list out additional activities, courses, awards etc"
+    },
+    "projects": {
+      "addProject": "Add Project",
+      "deleteProject": "Delete project",
+      "projectName": "Project Name",
+      "description": "Description",
+      "placeholderProject": "OpenResume",
+      "placeholderDate": "Winter 2022",
+      "placeholderBullets": "Bullet points"
+    },
+    "personalSummary": {
+      "summaryList": "Summary points"
+    },
+    "skills": {
+      "skillsList": "Skills List",
+      "featuredSkills": "Featured Skills (Optional)",
+      "featuredHint": "Featured skills is optional to highlight top skills, with more circles mean higher proficiency.",
+      "featuredPlaceholder": "Featured Skill {{n}}",
+      "placeholderBullets": "Bullet points"
+    },
+    "custom": {
+      "customTextbox": "Custom Textbox"
+    },
+    "theme": {
+      "title": "Resume Setting",
+      "themeColor": "Theme Color",
+      "fontFamily": "Font Family",
+      "fontSizePt": "Font Size (pt)",
+      "documentSize": "Document Size"
+    },
+    "icons": {
+      "hideSection": "Hide section",
+      "showSection": "Show section",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "hideBullets": "Hide bullet points",
+      "showBullets": "Show bullet points"
+    },
+    "objectiveDetailHeading": "Objective Detail"
+  },
+  "resumeTable": {
+    "profile": "Profile",
+    "education": "Education",
+    "workExperience": "Work Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "link": "Link",
+    "summary": "Summary",
+    "school": "School",
+    "degree": "Degree",
+    "gpa": "GPA",
+    "date": "Date",
+    "descriptions": "Descriptions",
+    "company": "Company",
+    "jobTitle": "Job Title",
+    "project": "Project"
+  },
+  "resumeParserPage": {
+    "title": "Resume Parser Playground",
+    "intro": "This playground showcases the OpenResume resume parser and its ability to parse information from a resume PDF. Click around the PDF examples below to observe different parsing results.",
+    "exampleBorrowedPrefix": "Borrowed from University of La Verne Career Center -",
+    "exampleBorrowedLink": "Link",
+    "exampleBuiltPrefix": "Created with OpenResume resume builder -",
+    "resumeExample": "Resume Example {{n}}",
+    "paragraphAtsPrefix": "You can also ",
+    "paragraphAtsBold": "add your resume below",
+    "paragraphAtsSuffix": " to access how well your resume would be parsed by similar Application Tracking Systems (ATS) used in job applications. The more information it can parse out, the better it indicates the resume is well formatted and easy to read. It is beneficial to have the name and email accurately parsed at the very least.",
+    "resultsHeading": "Resume Parsing Results",
+    "laverneLinkAria": "La Verne resume example PDF"
+  },
+  "parserArticle": {
+    "badgeBold": "Bold",
+    "badgeNewLine": "NewLine",
+    "mainTitle": "Resume Parser Algorithm Deep Dive",
+    "intro": "This deep dive showcases how OpenResume parses resume PDF files and extracts structured information.",
+    "step1Title": "Step 1. Read the text items from a PDF file",
+    "step2Title": "Step 2. Group text items into lines",
+    "step3Title": "Step 3. Group lines into sections",
+    "step4Title": "Step 4. Extract resume from sections",
+    "featureScoringTitle": "Feature Scoring System",
+    "featureSetsTitle": "Feature Sets",
+    "coreFeatureTitle": "Core Feature Function",
+    "subsectionsTitle": "Special Case: Subsections",
+    "metadataHeader": "Metadata",
+    "textContentHeader": "Text Content",
+    "linesColumn": "Lines",
+    "lineContentColumn": "Line Content",
+    "resumeAttrCol": "Resume Attribute",
+    "textHighestScoreCol": "Text (Highest Feature Score)",
+    "otherScoresCol": "Feature Scores of Other Texts",
+    "profileFeatureScoresCol1": "Resume Attribute",
+    "profileFeatureScoresCol2": "Text (Highest Feature Score)",
+    "profileFeatureScoresCol3": "Feature Scores of Other Texts",
+    "profileFieldName": "Name",
+    "profileFieldEmail": "Email",
+    "profileFieldPhone": "Phone",
+    "writtenByPrefix": "Written by ",
+    "writtenOnSuffix": " on June 2023",
+    "featureFunctionCol": "Feature Function",
+    "matchingScoreCol": "Feature Matching Score",
+    "coreAttrCol": "Resume Attribute",
+    "coreFnCol": "Core Feature Function",
+    "regexCol": "Regex",
+    "featureSetTitleName": "Name Feature Sets",
+    "tableLines": "Lines",
+    "tableLineContent": "Line Content",
+    "step1ColIndex": "#",
+    "sectionProfileLabel": "PROFILE"
+  }
+}

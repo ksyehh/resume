@@ -19,7 +19,7 @@ export type ResumeSectionToLines = { [sectionName in ResumeKey]?: Lines } & {
 };
 export type Subsections = Lines[];
 
-type FeatureScore = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4;
+type FeatureScore = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5;
 type ReturnMatchingTextOnly = boolean;
 export type FeatureSet =
   | [(item: TextItem) => boolean, FeatureScore]

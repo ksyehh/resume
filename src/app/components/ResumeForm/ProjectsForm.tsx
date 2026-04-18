@@ -1,3 +1,5 @@
+"use client";
+
 import { Form, FormSection } from "components/ResumeForm/Form";
 import {
   Input,
@@ -7,14 +9,16 @@ import type { CreateHandleChangeArgsWithDescriptions } from "components/ResumeFo
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { selectProjects, changeProjects } from "lib/redux/resumeSlice";
 import type { ResumeProject } from "lib/redux/types";
+import { useTranslations } from "lib/i18n/LocaleProvider";
 
 export const ProjectsForm = () => {
+  const tpr = useTranslations("resumeForm.projects");
   const projects = useAppSelector(selectProjects);
   const dispatch = useAppDispatch();
   const showDelete = projects.length > 1;
 
   return (
-    <Form form="projects" addButtonText="Add Project">
+    <Form form="projects" addButtonText={tpr("addProject")}>
       {projects.map(({ project, date, descriptions }, idx) => {
         const handleProjectChange = (
           ...[
@@ -35,28 +39,28 @@ export const ProjectsForm = () => {
             showMoveUp={showMoveUp}
             showMoveDown={showMoveDown}
             showDelete={showDelete}
-            deleteButtonTooltipText={"Delete project"}
+            deleteButtonTooltipText={tpr("deleteProject")}
           >
             <Input
               name="project"
-              label="Project Name"
-              placeholder="OpenResume"
+              label={tpr("projectName")}
+              placeholder={tpr("placeholderProject")}
               value={project}
               onChange={handleProjectChange}
               labelClassName="col-span-4"
             />
             <Input
               name="date"
-              label="Date"
-              placeholder="Winter 2022"
+              label={tpr("date")}
+              placeholder={tpr("placeholderDate")}
               value={date}
               onChange={handleProjectChange}
               labelClassName="col-span-2"
             />
             <BulletListTextarea
               name="descriptions"
-              label="Description"
-              placeholder="Bullet points"
+              label={tpr("description")}
+              placeholder={tpr("placeholderBullets")}
               value={descriptions}
               onChange={handleProjectChange}
               labelClassName="col-span-full"

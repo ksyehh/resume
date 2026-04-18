@@ -1,13 +1,17 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { ResumePDF } from "components/Resume/ResumePDF";
-import { initialResumeState } from "lib/redux/resumeSlice";
 import { initialSettings } from "lib/redux/settingsSlice";
 import { ResumeIframeCSR } from "components/Resume/ResumeIFrame";
 import { START_HOME_RESUME, END_HOME_RESUME } from "home/constants";
+import {
+  START_HOME_RESUME_ZH,
+  END_HOME_RESUME_ZH,
+} from "home/constants-zh";
 import { makeObjectCharIterator } from "lib/make-object-char-iterator";
 import { useTailwindBreakpoints } from "lib/hooks/useTailwindBreakpoints";
 import { deepClone } from "lib/deep-clone";
+import { useLocale, useTranslations } from "lib/i18n/LocaleProvider";
 
 // countObjectChar(END_HOME_RESUME) -> ~1800 chars
 const INTERVAL_MS = 50; // 20 Intervals Per Second
@@ -20,12 +24,24 @@ const CHARS_PER_INTERVAL = 10;
 const RESET_INTERVAL_MS = 60 * 1000; // 60s
 
 export const AutoTypingResume = () => {
-  const [resume, setResume] = useState(deepClone(initialResumeState));
+  const { locale } = useLocale();
+  const th = useTranslations("home.autoTyping");
+
+  const startResume = locale === "zh" ? START_HOME_RESUME_ZH : START_HOME_RESUME;
+  const endResume = locale === "zh" ? END_HOME_RESUME_ZH : END_HOME_RESUME;
+
+  const [resume, setResume] = useState(() => deepClone(START_HOME_RESUME));
   const resumeCharIterator = useRef(
-    makeObjectCharIterator(START_HOME_RESUME, END_HOME_RESUME)
+    makeObjectCharIterator(startResume, endResume)
   );
   const hasSetEndResume = useRef(false);
   const { isLg } = useTailwindBreakpoints();
+
+  useEffect(() => {
+    resumeCharIterator.current = makeObjectCharIterator(startResume, endResume);
+    hasSetEndResume.current = false;
+    setResume(deepClone(startResume));
+  }, [locale, startResume, endResume]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -39,24 +55,24 @@ export const AutoTypingResume = () => {
         // Sometimes the iterator doesn't end on the last char,
         // so we manually set its end state here
         if (!hasSetEndResume.current) {
-          setResume(END_HOME_RESUME);
+          setResume(endResume);
           hasSetEndResume.current = true;
         }
       }
     }, INTERVAL_MS);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [endResume]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       resumeCharIterator.current = makeObjectCharIterator(
-        START_HOME_RESUME,
-        END_HOME_RESUME
+        startResume,
+        endResume
       );
       hasSetEndResume.current = false;
     }, RESET_INTERVAL_MS);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [startResume, endResume]);
 
   return (
     <>
@@ -67,13 +83,19 @@ export const AutoTypingResume = () => {
             ...initialSettings,
             fontSize: "12",
             formToHeading: {
-              workExperiences: resume.workExperiences[0].company
-                ? "WORK EXPERIENCE"
+              ...initialSettings.formToHeading,
+              personalSummary: resume.personalSummary.descriptions.some(
+                (d) => d.length > 0
+              )
+                ? th("personalSummary")
                 : "",
-              educations: resume.educations[0].school ? "EDUCATION" : "",
-              projects: resume.projects[0].project ? "PROJECT" : "",
-              skills: resume.skills.featuredSkills[0].skill ? "SKILLS" : "",
-              custom: "CUSTOM SECTION",
+              workExperiences: resume.workExperiences[0].company
+                ? th("workExperience")
+                : "",
+              projects: resume.projects[0].project ? th("project") : "",
+              educations: resume.educations[0].school ? th("education") : "",
+              skills: resume.skills.featuredSkills[0].skill ? th("skills") : "",
+              custom: th("custom"),
             },
           }}
         />

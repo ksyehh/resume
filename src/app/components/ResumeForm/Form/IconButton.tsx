@@ -1,3 +1,5 @@
+"use client";
+
 import { IconButton } from "components/Button";
 import {
   EyeIcon,
@@ -7,6 +9,7 @@ import {
   TrashIcon,
   ListBulletIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "lib/i18n/LocaleProvider";
 
 export const ShowIconButton = ({
   show,
@@ -15,7 +18,8 @@ export const ShowIconButton = ({
   show: boolean;
   setShow: (show: boolean) => void;
 }) => {
-  const tooltipText = show ? "Hide section" : "Show section";
+  const ti = useTranslations("resumeForm.icons");
+  const tooltipText = show ? ti("hideSection") : ti("showSection");
   const onClick = () => {
     setShow(!show);
   };
@@ -39,7 +43,8 @@ export const MoveIconButton = ({
   size?: "small" | "medium";
   onClick: (type: MoveIconButtonType) => void;
 }) => {
-  const tooltipText = type === "up" ? "Move up" : "Move down";
+  const ti = useTranslations("resumeForm.icons");
+  const tooltipText = type === "up" ? ti("moveUp") : ti("moveDown");
   const sizeClassName = size === "medium" ? "h-6 w-6" : "h-4 w-4";
   const Icon = type === "up" ? ArrowSmallUpIcon : ArrowSmallDownIcon;
 
@@ -77,9 +82,10 @@ export const BulletListIconButton = ({
   onClick: (newShowBulletPoints: boolean) => void;
   showBulletPoints: boolean;
 }) => {
+  const ti = useTranslations("resumeForm.icons");
   const tooltipText = showBulletPoints
-    ? "Hide bullet points"
-    : "Show bullet points";
+    ? ti("hideBullets")
+    : ti("showBullets");
 
   return (
     <IconButton

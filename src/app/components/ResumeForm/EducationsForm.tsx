@@ -1,3 +1,5 @@
+"use client";
+
 import { Form, FormSection } from "components/ResumeForm/Form";
 import {
   BulletListTextarea,
@@ -12,8 +14,10 @@ import {
   changeShowBulletPoints,
   selectShowBulletPoints,
 } from "lib/redux/settingsSlice";
+import { useTranslations } from "lib/i18n/LocaleProvider";
 
 export const EducationsForm = () => {
+  const te = useTranslations("resumeForm.education");
   const educations = useAppSelector(selectEducations);
   const dispatch = useAppDispatch();
   const showDelete = educations.length > 1;
@@ -21,7 +25,7 @@ export const EducationsForm = () => {
   const showBulletPoints = useAppSelector(selectShowBulletPoints(form));
 
   return (
-    <Form form={form} addButtonText="Add School">
+    <Form form={form} addButtonText={te("addSchool")}>
       {educations.map(({ school, degree, gpa, date, descriptions }, idx) => {
         const handleEducationChange = (
           ...[
@@ -47,46 +51,46 @@ export const EducationsForm = () => {
             showMoveUp={showMoveUp}
             showMoveDown={showMoveDown}
             showDelete={showDelete}
-            deleteButtonTooltipText="Delete school"
+            deleteButtonTooltipText={te("deleteSchool")}
           >
             <Input
-              label="School"
+              label={te("school")}
               labelClassName="col-span-4"
               name="school"
-              placeholder="Cornell University"
+              placeholder={te("placeholderSchool")}
               value={school}
               onChange={handleEducationChange}
             />
             <Input
-              label="Date"
+              label={te("date")}
               labelClassName="col-span-2"
               name="date"
-              placeholder="May 2018"
+              placeholder={te("placeholderDate")}
               value={date}
               onChange={handleEducationChange}
             />
             <Input
-              label="Degree & Major"
+              label={te("degreeMajor")}
               labelClassName="col-span-4"
               name="degree"
-              placeholder="Bachelor of Science in Computer Engineering"
+              placeholder={te("placeholderDegree")}
               value={degree}
               onChange={handleEducationChange}
             />
             <Input
-              label="GPA"
+              label={te("gpa")}
               labelClassName="col-span-2"
               name="gpa"
-              placeholder="3.81"
+              placeholder={te("placeholderGpa")}
               value={gpa}
               onChange={handleEducationChange}
             />
             <div className="relative col-span-full">
               <BulletListTextarea
-                label="Additional Information (Optional)"
+                label={te("additionalInfo")}
                 labelClassName="col-span-full"
                 name="descriptions"
-                placeholder="Free paragraph space to list out additional activities, courses, awards etc"
+                placeholder={te("placeholderExtra")}
                 value={descriptions}
                 onChange={handleEducationChange}
                 showBulletPoints={showBulletPoints}

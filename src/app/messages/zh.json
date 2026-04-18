@@ -1,0 +1,216 @@
+{
+  "nav": {
+    "builder": "制作",
+    "parser": "解析",
+    "ariaSiteHeader": "站点页头",
+    "ariaSiteNav": "站点导航",
+    "srOpenResume": "OpenResume",
+    "logoAlt": "OpenResume 标志",
+    "githubIframeTitle": "GitHub"
+  },
+  "language": {
+    "switchToZh": "中文",
+    "switchToEn": "EN",
+    "ariaToggle": "切换语言"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "轻松创建",
+      "titleLine2": "专业简历",
+      "subtitle": "使用这款免费、开源且强大的简历生成器",
+      "cta": "创建简历",
+      "noSignup": "无需注册",
+      "parserTeaserPrefix": "已有简历？用",
+      "parserLink": "简历解析器",
+      "parserTeaserSuffix": "测试 ATS 可读性"
+    },
+    "autoTyping": {
+      "personalSummary": "个人总结",
+      "workExperience": "工作经历",
+      "education": "教育背景",
+      "project": "项目经验",
+      "skills": "技能",
+      "custom": "自定义版块"
+    }
+  },
+  "resumeImport": {
+    "headingNew": "从现有简历导入数据",
+    "headingOverride": "用新简历覆盖当前数据",
+    "dontHaveHeading": "还没有简历？",
+    "createScratch": "从零创建",
+    "savedHeading": "浏览器中已保存上次会话的数据",
+    "continueLabel": "继续上次编辑",
+    "orDivider": "或"
+  },
+  "dropzone": {
+    "browseOrDrop": "浏览选择 PDF 文件或拖拽到此处",
+    "privacyNote": "文件仅在本地使用，不会离开你的浏览器",
+    "browseFile": "浏览文件",
+    "onlyPdf": "仅支持 PDF 文件",
+    "importContinue": "导入并继续",
+    "notePrefix": "说明：",
+    "noteImport": "导入",
+    "noteParser": "解析",
+    "noteSuffix": "对单列英文简历效果最佳",
+    "removeFile": "移除文件",
+    "addPdfAlt": "添加 PDF"
+  },
+  "resumeControlBar": {
+    "autoscale": "自动缩放",
+    "downloadResume": "下载简历"
+  },
+  "resumeForm": {
+    "profile": {
+      "objectiveDetail": "求职意向详情",
+      "optional": "（可选）",
+      "name": "姓名",
+      "objective": "求职意向",
+      "email": "邮箱",
+      "phone": "电话",
+      "website": "网站",
+      "location": "地点",
+      "placeholderName": "Sal Khan",
+      "placeholderObjective": "致力于让任何人都能免费获得优质教育的创业者与教育者",
+      "placeholderEmail": "hello@khanacademy.org",
+      "placeholderPhone": "(123)456-7890",
+      "placeholderWebsite": "linkedin.com/in/khanacademy",
+      "placeholderLocation": "纽约州纽约市"
+    },
+    "work": {
+      "addJob": "添加工作经历",
+      "deleteJob": "删除此项",
+      "company": "公司",
+      "jobTitle": "职位",
+      "date": "日期",
+      "description": "描述",
+      "placeholderCompany": "Khan Academy",
+      "placeholderJobTitle": "软件工程师",
+      "placeholderDate": "2022年6月 - 至今",
+      "placeholderBullets": "要点列表"
+    },
+    "education": {
+      "addSchool": "添加教育背景",
+      "deleteSchool": "删除此项",
+      "school": "学校",
+      "degreeMajor": "学位与专业",
+      "gpa": "GPA",
+      "additionalInfo": "附加信息（可选）",
+      "placeholderSchool": "康奈尔大学",
+      "placeholderDate": "2018年5月",
+      "placeholderDegree": "计算机工程理学学士",
+      "placeholderGpa": "3.81",
+      "placeholderExtra": "可填写课外 activities、课程、奖项等"
+    },
+    "projects": {
+      "addProject": "添加项目",
+      "deleteProject": "删除此项",
+      "projectName": "项目名称",
+      "description": "描述",
+      "placeholderProject": "OpenResume",
+      "placeholderDate": "2022年冬季",
+      "placeholderBullets": "要点列表"
+    },
+    "personalSummary": {
+      "summaryList": "总结要点"
+    },
+    "skills": {
+      "skillsList": "技能列表",
+      "featuredSkills": "精选技能（可选）",
+      "featuredHint": "精选技能用于突出强项，圆圈越多表示熟练度越高。",
+      "featuredPlaceholder": "精选技能 {{n}}",
+      "placeholderBullets": "要点列表"
+    },
+    "custom": {
+      "customTextbox": "自定义文本"
+    },
+    "theme": {
+      "title": "简历设置",
+      "themeColor": "主题色",
+      "fontFamily": "字体",
+      "fontSizePt": "字号 (pt)",
+      "documentSize": "纸张尺寸"
+    },
+    "icons": {
+      "hideSection": "隐藏区块",
+      "showSection": "显示区块",
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "hideBullets": "隐藏项目符号",
+      "showBullets": "显示项目符号"
+    },
+    "objectiveDetailHeading": "求职意向详情"
+  },
+  "resumeTable": {
+    "profile": "基本信息",
+    "education": "教育背景",
+    "workExperience": "工作经历",
+    "projects": "项目经验",
+    "skills": "技能",
+    "name": "姓名",
+    "email": "邮箱",
+    "phone": "电话",
+    "location": "地点",
+    "link": "链接",
+    "summary": "摘要",
+    "school": "学校",
+    "degree": "学位",
+    "gpa": "GPA",
+    "date": "日期",
+    "descriptions": "描述",
+    "company": "公司",
+    "jobTitle": "职位",
+    "project": "项目经验"
+  },
+  "resumeParserPage": {
+    "title": "简历解析试用台",
+    "intro": "本页展示 OpenResume 简历解析器如何从 PDF 中提取信息。点击下方示例 PDF 可查看不同解析结果。",
+    "exampleBorrowedPrefix": "摘自拉文大学就业指导中心 -",
+    "exampleBorrowedLink": "链接",
+    "exampleBuiltPrefix": "由 OpenResume 简历生成器创建 -",
+    "resumeExample": "简历示例 {{n}}",
+    "paragraphAtsPrefix": "你也可以在下方",
+    "paragraphAtsBold": "上传自己的简历",
+    "paragraphAtsSuffix": "，查看与招聘常用的 applicant tracking system（ATS）类似的解析效果。解析出的信息越多，通常说明版式越清晰。至少应能准确解析姓名与邮箱。",
+    "resultsHeading": "解析结果",
+    "laverneLinkAria": "拉文大学简历示例 PDF"
+  },
+  "parserArticle": {
+    "badgeBold": "粗体",
+    "badgeNewLine": "换行",
+    "mainTitle": "简历解析算法详解",
+    "intro": "面向喜欢刨根问底的读者：本节逐步拆解 OpenResume 解析算法的 4 个步骤。（注意：该算法针对单列、英文简历设计。）",
+    "step1Title": "步骤 1：从 PDF 读取文本元素",
+    "step2Title": "步骤 2：将文本元素合并为行",
+    "step3Title": "步骤 3：将行归类为章节",
+    "step4Title": "步骤 4：从章节中提取简历字段",
+    "featureScoringTitle": "特征评分系统",
+    "featureSetsTitle": "特征集合",
+    "coreFeatureTitle": "核心特征函数",
+    "subsectionsTitle": "特殊情况：子区块",
+    "metadataHeader": "元数据",
+    "textContentHeader": "文本内容",
+    "linesColumn": "行号",
+    "lineContentColumn": "行内容",
+    "resumeAttrCol": "简历字段",
+    "textHighestScoreCol": "文本（最高特征分）",
+    "otherScoresCol": "其他文本的特征分",
+    "profileFeatureScoresCol1": "简历字段",
+    "profileFeatureScoresCol2": "文本（最高特征分）",
+    "profileFeatureScoresCol3": "其他文本的特征分",
+    "profileFieldName": "姓名",
+    "profileFieldEmail": "邮箱",
+    "profileFieldPhone": "电话",
+    "writtenByPrefix": "作者：",
+    "writtenOnSuffix": " （2023年6月）",
+    "featureFunctionCol": "特征函数",
+    "matchingScoreCol": "匹配得分",
+    "coreAttrCol": "简历字段",
+    "coreFnCol": "核心特征函数",
+    "regexCol": "正则",
+    "featureSetTitleName": "姓名字段特征集",
+    "tableLines": "行号",
+    "tableLineContent": "行内容",
+    "step1ColIndex": "#",
+    "sectionProfileLabel": "基本信息"
+  }
+}

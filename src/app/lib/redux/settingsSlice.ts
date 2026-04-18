@@ -7,6 +7,7 @@ export interface Settings {
   fontSize: string;
   documentSize: string;
   formToShow: {
+    personalSummary: boolean;
     workExperiences: boolean;
     educations: boolean;
     projects: boolean;
@@ -14,6 +15,7 @@ export interface Settings {
     custom: boolean;
   };
   formToHeading: {
+    personalSummary: string;
     workExperiences: string;
     educations: string;
     projects: string;
@@ -26,6 +28,7 @@ export interface Settings {
     projects: boolean;
     skills: boolean;
     custom: boolean;
+    personalSummary: boolean;
   };
 }
 
@@ -47,25 +50,35 @@ export const initialSettings: Settings = {
   fontSize: DEFAULT_FONT_SIZE,
   documentSize: "Letter",
   formToShow: {
+    personalSummary: true,
     workExperiences: true,
     educations: true,
     projects: true,
-    skills: true,
+    skills: false,
     custom: false,
   },
   formToHeading: {
-    workExperiences: "WORK EXPERIENCE",
-    educations: "EDUCATION",
-    projects: "PROJECT",
-    skills: "SKILLS",
-    custom: "CUSTOM SECTION",
+    personalSummary: "个人总结",
+    workExperiences: "工作经历",
+    educations: "教育背景",
+    projects: "项目经验",
+    skills: "技能",
+    custom: "自定义",
   },
-  formsOrder: ["workExperiences", "educations", "projects", "skills", "custom"],
+  formsOrder: [
+    "personalSummary",
+    "workExperiences",
+    "projects",
+    "educations",
+    "skills",
+    "custom",
+  ],
   showBulletPoints: {
     educations: true,
     projects: true,
     skills: true,
     custom: true,
+    personalSummary: true,
   },
 };
 

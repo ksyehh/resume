@@ -1,3 +1,5 @@
+"use client";
+
 import { Form, FormSection } from "components/ResumeForm/Form";
 import {
   Input,
@@ -10,15 +12,17 @@ import {
   selectWorkExperiences,
 } from "lib/redux/resumeSlice";
 import type { ResumeWorkExperience } from "lib/redux/types";
+import { useTranslations } from "lib/i18n/LocaleProvider";
 
 export const WorkExperiencesForm = () => {
+  const tw = useTranslations("resumeForm.work");
   const workExperiences = useAppSelector(selectWorkExperiences);
   const dispatch = useAppDispatch();
 
   const showDelete = workExperiences.length > 1;
 
   return (
-    <Form form="workExperiences" addButtonText="Add Job">
+    <Form form="workExperiences" addButtonText={tw("addJob")}>
       {workExperiences.map(({ company, jobTitle, date, descriptions }, idx) => {
         const handleWorkExperienceChange = (
           ...[
@@ -26,9 +30,6 @@ export const WorkExperiencesForm = () => {
             value,
           ]: CreateHandleChangeArgsWithDescriptions<ResumeWorkExperience>
         ) => {
-          // TS doesn't support passing union type to single call signature
-          // https://github.com/microsoft/TypeScript/issues/54027
-          // any is used here as a workaround
           dispatch(changeWorkExperiences({ idx, field, value } as any));
         };
         const showMoveUp = idx !== 0;
@@ -42,37 +43,37 @@ export const WorkExperiencesForm = () => {
             showMoveUp={showMoveUp}
             showMoveDown={showMoveDown}
             showDelete={showDelete}
-            deleteButtonTooltipText="Delete job"
+            deleteButtonTooltipText={tw("deleteJob")}
           >
             <Input
-              label="Company"
+              label={tw("company")}
               labelClassName="col-span-full"
               name="company"
-              placeholder="Khan Academy"
+              placeholder={tw("placeholderCompany")}
               value={company}
               onChange={handleWorkExperienceChange}
             />
             <Input
-              label="Job Title"
+              label={tw("jobTitle")}
               labelClassName="col-span-4"
               name="jobTitle"
-              placeholder="Software Engineer"
+              placeholder={tw("placeholderJobTitle")}
               value={jobTitle}
               onChange={handleWorkExperienceChange}
             />
             <Input
-              label="Date"
+              label={tw("date")}
               labelClassName="col-span-2"
               name="date"
-              placeholder="Jun 2022 - Present"
+              placeholder={tw("placeholderDate")}
               value={date}
               onChange={handleWorkExperienceChange}
             />
             <BulletListTextarea
-              label="Description"
+              label={tw("description")}
               labelClassName="col-span-full"
               name="descriptions"
-              placeholder="Bullet points"
+              placeholder={tw("placeholderBullets")}
               value={descriptions}
               onChange={handleWorkExperienceChange}
             />

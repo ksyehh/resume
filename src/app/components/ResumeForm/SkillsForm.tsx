@@ -1,3 +1,5 @@
+"use client";
+
 import { Form } from "components/ResumeForm/Form";
 import {
   BulletListTextarea,
@@ -12,8 +14,11 @@ import {
   changeShowBulletPoints,
   selectThemeColor,
 } from "lib/redux/settingsSlice";
+import { useTranslations } from "lib/i18n/LocaleProvider";
+import { interpolate } from "lib/i18n/get-message";
 
 export const SkillsForm = () => {
+  const ts = useTranslations("resumeForm.skills");
   const skills = useAppSelector(selectSkills);
   const dispatch = useAppDispatch();
   const { featuredSkills, descriptions } = skills;
@@ -40,10 +45,10 @@ export const SkillsForm = () => {
       <div className="col-span-full grid grid-cols-6 gap-3">
         <div className="relative col-span-full">
           <BulletListTextarea
-            label="Skills List"
+            label={ts("skillsList")}
             labelClassName="col-span-full"
             name="descriptions"
-            placeholder="Bullet points"
+            placeholder={ts("placeholderBullets")}
             value={descriptions}
             onChange={handleSkillsChange}
             showBulletPoints={showBulletPoints}
@@ -57,12 +62,11 @@ export const SkillsForm = () => {
         </div>
         <div className="col-span-full mb-4 mt-6 border-t-2 border-dotted border-gray-200" />
         <InputGroupWrapper
-          label="Featured Skills (Optional)"
+          label={ts("featuredSkills")}
           className="col-span-full"
         >
           <p className="mt-2 text-sm font-normal text-gray-600">
-            Featured skills is optional to highlight top skills, with more
-            circles mean higher proficiency.
+            {ts("featuredHint")}
           </p>
         </InputGroupWrapper>
 
@@ -75,7 +79,9 @@ export const SkillsForm = () => {
             setSkillRating={(newSkill, newRating) => {
               handleFeaturedSkillsChange(idx, newSkill, newRating);
             }}
-            placeholder={`Featured Skill ${idx + 1}`}
+            placeholder={interpolate(ts("featuredPlaceholder"), {
+              n: idx + 1,
+            })}
             circleColor={themeColor}
           />
         ))}

@@ -31,9 +31,12 @@ export const extractResumeFromSections = (
 
   return {
     profile,
-    educations,
+    personalSummary: {
+      descriptions: [],
+    },
     workExperiences,
     projects,
+    educations,
     skills,
     custom: {
       descriptions: [],

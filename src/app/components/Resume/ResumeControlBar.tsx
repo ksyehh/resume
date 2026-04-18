@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { useLocale } from "lib/i18n/LocaleProvider";
 import { useSetDefaultScale } from "components/Resume/hooks";
 import {
   MagnifyingGlassIcon,
@@ -21,6 +22,7 @@ const ResumeControlBar = ({
   document: JSX.Element;
   fileName: string;
 }) => {
+  const { t } = useLocale();
   const { scaleOnResize, setScaleOnResize } = useSetDefaultScale({
     setScale,
     documentSize,
@@ -34,7 +36,7 @@ const ResumeControlBar = ({
   }, [update, document]);
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 flex h-[var(--resume-control-bar-height)] items-center justify-center px-[var(--resume-padding)] text-gray-600 lg:justify-between">
+    <div className="sticky bottom-0 left-0 right-0 z-10 flex h-[var(--resume-control-bar-height)] items-center justify-center px-[var(--resume-padding)] text-gray-600 lg:justify-between">
       <div className="flex items-center gap-2">
         <MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
         <input
@@ -56,7 +58,7 @@ const ResumeControlBar = ({
             checked={scaleOnResize}
             onChange={() => setScaleOnResize((prev) => !prev)}
           />
-          <span className="select-none">Autoscale</span>
+          <span className="select-none">{t("resumeControlBar.autoscale")}</span>
         </label>
       </div>
       <a
@@ -65,7 +67,9 @@ const ResumeControlBar = ({
         download={fileName}
       >
         <ArrowDownTrayIcon className="h-4 w-4" />
-        <span className="whitespace-nowrap">Download Resume</span>
+        <span className="whitespace-nowrap">
+          {t("resumeControlBar.downloadResume")}
+        </span>
       </a>
     </div>
   );
