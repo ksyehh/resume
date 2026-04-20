@@ -55,11 +55,9 @@ export const useSetInitialStore = () => {
       dispatch(setResume(mergedResumeState));
     }
     if (state.settings) {
-      // 创建一个不包含 formToHeading 的设置对象
-      const { formToHeading: _, ...settingsWithoutHeading } = state.settings;
       const mergedSettingsState = deepMerge(
         initialSettings,
-        settingsWithoutHeading
+        state.settings
       ) as Settings;
       fillMissingFromDefaults(
         mergedSettingsState as unknown as Record<string, unknown>,

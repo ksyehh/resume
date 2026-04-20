@@ -20,7 +20,7 @@ export const TopNavBar = () => {
           <Image
             src={logoSrc}
             alt={t("nav.logoAlt")}
-            className="h-8"
+            className="h-8 w-full"
             priority
           />
         </a>

@@ -123,12 +123,9 @@ export const ResumePDF = ({
           {Boolean(settings.themeColor) && (
             <View
               style={{
-              position: "absolute",
-              top: spacing[20],
-              left: spacing[20],
-              right: spacing[20],
               height: spacing[3.5],
               backgroundColor: themeColor,
+              marginBottom: spacing[10],
             }}
             />
           )}

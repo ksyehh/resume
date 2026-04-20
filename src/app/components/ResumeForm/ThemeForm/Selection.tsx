@@ -5,6 +5,7 @@ import {
   FONT_FAMILY_TO_DISPLAY_NAME,
   type FontFamily,
 } from "components/fonts/constants";
+import { getAllFontFamiliesToLoad } from "components/fonts/lib";
 import dynamic from "next/dynamic";
 
 const Selection = ({
@@ -55,7 +56,7 @@ const FontFamilySelections = ({
   themeColor: string;
   handleSettingsChange: (field: GeneralSetting, value: string) => void;
 }) => {
-  const allFontFamilies: FontFamily[] = ["NotoSansSC"];
+  const allFontFamilies = getAllFontFamiliesToLoad();
   return (
     <SelectionsWrapper>
       {allFontFamilies.map((fontFamily, idx) => {
@@ -81,7 +82,8 @@ const FontFamilySelections = ({
 };
 
 /**
- * Load FontFamilySelections client side since it uses navigator object that is only available on client side
+ * Load FontFamilySelections client side since it calls getAllFontFamiliesToLoad,
+ * which uses navigator object that is only available on client side
  */
 export const FontFamilySelectionsCSR = dynamic(
   () => Promise.resolve(FontFamilySelections),
@@ -139,7 +141,7 @@ export const DocumentSizeSelections = ({
 }) => {
   return (
     <SelectionsWrapper>
-      {["A4"].map((type, idx) => {
+      {["Letter", "A4"].map((type, idx) => {
         return (
           <Selection
             key={idx}
@@ -149,6 +151,9 @@ export const DocumentSizeSelections = ({
           >
             <div className="flex flex-col items-center">
               <div>{type}</div>
+              <div className="text-xs text-gray-500">
+                {type === "Letter" ? "(US, Canada)" : "(other countries)"}
+              </div>
             </div>
           </Selection>
         );

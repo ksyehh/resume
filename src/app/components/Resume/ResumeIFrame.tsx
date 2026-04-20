@@ -40,10 +40,20 @@ const getIframeInitialContent = (isA4: boolean) => {
     ${allFontFamiliesPreloadLinks}
     <style>
       ${allFontFamiliesFontFaces}
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      #react-frame-component-content {
+        height: 100%;
+        overflow-y: auto;
+      }
     </style>
   </head>
-  <body style='overflow: hidden; width: ${width}pt; margin: 0; padding: 0; -webkit-text-size-adjust:none;'>
-    <div></div>
+  <body style='width: ${width}pt; margin: 0; padding: 0; -webkit-text-size-adjust:none;'>
+    <div id='react-frame-component-content'></div>
   </body>
 </html>`;
 };
@@ -83,12 +93,11 @@ const ResumeIframe = ({
     <div
       style={{
         maxWidth: `${width * scale}px`,
-        maxHeight: `${height * scale}px`,
       }}
     >
       {/* There is an outer div and an inner div here. The inner div sets the iframe width and uses transform scale to zoom in/out the resume iframe.
         While zooming out or scaling down via transform, the element appears smaller but still occupies the same width/height. Therefore, we use the 
-        outer div to restrict the max width & height proportionally */}
+        outer div to restrict the max width proportionally */}
       <div
         style={{
           width: `${width}px`,
