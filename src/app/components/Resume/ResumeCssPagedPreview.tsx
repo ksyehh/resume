@@ -23,7 +23,8 @@ import { DEFAULT_FONT_COLOR } from "lib/redux/settingsSlice";
 type Props = {
   resume: Resume;
   settings: Settings;
-  scale: number;
+  /** 与左侧表单栏 `max-w-2xl` 内容区等宽，用于计算缩放使 A4 宽度贴合容器 */
+  containerWidth: number;
 };
 
 const MEASURE_DEBOUNCE_MS = 110;
@@ -77,7 +78,11 @@ function MirrorColumn({
   );
 }
 
-export function ResumeCssPagedPreview({ resume, settings, scale }: Props) {
+export function ResumeCssPagedPreview({
+  resume,
+  settings,
+  containerWidth,
+}: Props) {
   const measureRef = useRef<HTMLDivElement>(null);
   const [totalHeight, setTotalHeight] = useState(0);
   const [pagesToShow, setPagesToShow] = useState(1);
@@ -87,6 +92,9 @@ export function ResumeCssPagedPreview({ resume, settings, scale }: Props) {
   const docHeight =
     settings.documentSize === "A4" ? A4_HEIGHT_PX : LETTER_HEIGHT_PX;
   const pad = spacingPx(20);
+  /** 使逻辑页宽缩放到与左侧编辑区可用宽度一致 */
+  const scale =
+    containerWidth > 0 ? Math.max(0.05, containerWidth / docWidth) : 1;
   /** 与 PDF 一致：每页正文区域高度 = 页高 − 上下页边距 */
   const innerViewportHeight = Math.max(1, docHeight - 2 * pad);
 
