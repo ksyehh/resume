@@ -47,10 +47,9 @@ export const Resume = () => {
   return (
     <>
       <NonEnglishFontsCSSLazyLoader />
-      <div className="relative flex justify-center md:justify-start">
-        <FlexboxSpacer maxWidth={50} className="hidden md:block" />
-        <div className="relative flex w-full max-w-2xl min-w-0 flex-col">
-          <section className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-y-auto md:p-[var(--resume-padding)] md:pt-6">
+      <div className="relative flex justify-center">
+        <div className="relative flex w-full max-w-3xl min-w-0 flex-col">
+          <section className="h-[calc(100vh-var(--top-nav-bar-height))] overflow-y-auto p-4 sm:p-6 scrollbar-hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div ref={previewWidthRef} className="w-full">
               <ResumeCssPagedPreview
                 resume={resume}
@@ -59,12 +58,7 @@ export const Resume = () => {
               />
             </div>
           </section>
-          <ResumeControlBarCSR
-            document={document}
-            fileName={resume.profile.name + " - Resume"}
-          />
         </div>
-        <ResumeControlBarBorder />
       </div>
     </>
   );

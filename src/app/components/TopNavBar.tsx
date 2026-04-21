@@ -3,9 +3,26 @@ import Image from "next/image";
 import logoSrc from "public/logo.svg";
 import { cx } from "lib/cx";
 import { useLocale } from "lib/i18n/LocaleProvider";
+import { usePathname } from "next/navigation";
+import { ResumeControlBarCSR } from "components/Resume/ResumeControlBar";
+import { useAppSelector } from "lib/redux/hooks";
+import { selectResume } from "lib/redux/resumeSlice";
+import { selectSettings } from "lib/redux/settingsSlice";
+import { BuilderResumePDF } from "components/Resume/ResumePDF/BuilderResumePDF";
+import { useMemo } from "react";
 
 export const TopNavBar = () => {
   const { t } = useLocale();
+  const pathname = usePathname();
+  const isResumeBuilderPage = pathname === "/resume-builder";
+  
+  const resume = useAppSelector(selectResume);
+  const settings = useAppSelector(selectSettings);
+  
+  const document = useMemo(
+    () => <BuilderResumePDF resume={resume} settings={settings} isPDF={true} />,
+    [resume, settings]
+  );
 
   return (
     <header
@@ -28,6 +45,14 @@ export const TopNavBar = () => {
           aria-label={t("nav.ariaSiteNav")}
           className="flex items-center gap-2 text-sm font-medium"
         >
+          {isResumeBuilderPage && (
+            <div className="flex items-center">
+              <ResumeControlBarCSR
+                document={document}
+                fileName={resume.profile.name + " - Resume"}
+              />
+            </div>
+          )}
         </nav>
       </div>
     </header>
