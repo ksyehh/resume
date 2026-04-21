@@ -22,7 +22,7 @@ export const Resume = () => {
   const resume = useAppSelector(selectResume);
   const settings = useAppSelector(selectSettings);
   const document = useMemo(
-    () => <ResumePDF resume={resume} settings={settings} isPDF={true} />,
+    () => <ResumePDF resume={resume} settings={settings} isPDF={true} mode="builder" />,
     [resume, settings]
   );
 
@@ -40,11 +40,13 @@ export const Resume = () => {
               documentSize={settings.documentSize}
               scale={scale}
               enablePDFViewer={DEBUG_RESUME_PDF_FLAG}
+              mode="builder"
             >
               <ResumePDF
                 resume={resume}
                 settings={settings}
                 isPDF={DEBUG_RESUME_PDF_FLAG}
+                mode="builder"
               />
             </ResumeIframeCSR>
           </section>

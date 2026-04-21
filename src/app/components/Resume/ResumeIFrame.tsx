@@ -67,11 +67,13 @@ const ResumeIframe = ({
   scale,
   children,
   enablePDFViewer = false,
+  mode = "default",
 }: {
   documentSize: string;
   scale: number;
   children: React.ReactNode;
   enablePDFViewer?: boolean;
+  mode?: "default" | "home" | "builder";
 }) => {
   const isA4 = documentSize === "A4";
   const iframeInitialContent = useMemo(

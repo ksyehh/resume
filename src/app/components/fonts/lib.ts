@@ -3,6 +3,7 @@ import {
   ENGLISH_FONT_FAMILIES,
   NON_ENGLISH_FONT_FAMILIES,
   NON_ENGLISH_FONT_FAMILY_TO_LANGUAGE,
+  type FontFamily,
 } from "components/fonts/constants";
 
 /**
@@ -19,6 +20,6 @@ const getPreferredNonEnglishFontFamilies = () => {
   });
 };
 
-export const getAllFontFamiliesToLoad = () => {
-  return [...ENGLISH_FONT_FAMILIES, ...getPreferredNonEnglishFontFamilies()];
+export const getAllFontFamiliesToLoad = (): FontFamily[] => {
+  return ["NotoSansSC"];
 };

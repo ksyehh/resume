@@ -76,12 +76,13 @@ export const AutoTypingResume = () => {
 
   return (
     <>
-      <ResumeIframeCSR documentSize="Letter" scale={isLg ? 0.7 : 0.5}>
+      <ResumeIframeCSR documentSize="A4" scale={isLg ? 0.7 : 0.5} mode="home">
         <ResumePDF
           resume={resume}
           settings={{
             ...initialSettings,
-            fontSize: "12",
+            documentSize: "A4",
+            fontSize: "11",
             formToHeading: {
               ...initialSettings.formToHeading,
               personalSummary: resume.personalSummary.descriptions.some(
@@ -98,6 +99,7 @@ export const AutoTypingResume = () => {
               custom: th("custom"),
             },
           }}
+          mode="home"
         />
       </ResumeIframeCSR>
     </>

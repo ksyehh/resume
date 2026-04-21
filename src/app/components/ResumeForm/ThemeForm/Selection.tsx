@@ -141,23 +141,15 @@ export const DocumentSizeSelections = ({
 }) => {
   return (
     <SelectionsWrapper>
-      {["Letter", "A4"].map((type, idx) => {
-        return (
-          <Selection
-            key={idx}
-            selectedColor={themeColor}
-            isSelected={type === selectedDocumentSize}
-            onClick={() => handleSettingsChange("documentSize", type)}
-          >
-            <div className="flex flex-col items-center">
-              <div>{type}</div>
-              <div className="text-xs text-gray-500">
-                {type === "Letter" ? "(US, Canada)" : "(other countries)"}
-              </div>
-            </div>
-          </Selection>
-        );
-      })}
+      <Selection
+        selectedColor={themeColor}
+        isSelected={selectedDocumentSize === "A4"}
+        onClick={() => handleSettingsChange("documentSize", "A4")}
+      >
+        <div className="flex flex-col items-center">
+          <div>A4</div>
+        </div>
+      </Selection>
     </SelectionsWrapper>
   );
 };

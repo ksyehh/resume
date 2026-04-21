@@ -30,10 +30,12 @@ export const ResumePDF = ({
   resume,
   settings,
   isPDF = false,
+  mode = "default",
 }: {
   resume: Resume;
   settings: Settings;
   isPDF?: boolean;
+  mode?: "default" | "home" | "builder";
 }) => {
   const {
     profile,
