@@ -37,7 +37,7 @@ export const TopNavBar = () => {
           <Image
             src={logoSrc}
             alt={t("nav.logoAlt")}
-            className="h-8 w-full"
+            className="h-8 w-auto"
             priority
           />
         </a>
@@ -47,10 +47,12 @@ export const TopNavBar = () => {
         >
           {isResumeBuilderPage && (
             <div className="flex items-center">
-              <ResumeControlBarCSR
-                document={document}
-                fileName={resume.profile.name + " - Resume"}
-              />
+              <div className="flex items-center">
+                <ResumeControlBarCSR
+                  document={document}
+                  fileName={resume.profile.name + " - Resume"}
+                />
+              </div>
             </div>
           )}
         </nav>

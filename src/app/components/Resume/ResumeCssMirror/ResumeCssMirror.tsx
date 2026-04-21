@@ -32,8 +32,8 @@ function ResumeCssSection({
   children: React.ReactNode;
   className?: string;
 }) {
-  const barWidth = spacingPx(28);
-  const barHeight = spacingPx(3.5);
+  const barWidth = spacingPx(10);
+  const barHeight = spacingPx(1);
   return (
     <section
       className="flex flex-col"
@@ -164,7 +164,7 @@ function CssProfile({
         <p className="mt-0 text-neutral-800">{summary}</p>
       ) : null}
       <div
-        className="flex flex-wrap items-center gap-x-3 gap-y-1"
+        className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1"
         style={{ marginTop: spacingPx(0.5) }}
       >
         {iconRows.map(({ key, value, Icon }) => {

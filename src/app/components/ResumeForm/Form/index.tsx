@@ -41,7 +41,7 @@ export const BaseForm = ({
   className?: string;
 }) => (
   <section
-    className={`flex flex-col gap-3 rounded-sm border border-gray-200 bg-white p-5 pt-4 transition-opacity duration-200 ${className}`}
+    className={`flex flex-col gap-3 rounded-sm bg-white p-5 pt-4 shadow-lg transition-opacity duration-200 ${className}`}
   >
     {children}
   </section>

@@ -29,7 +29,7 @@ export const Hero = () => {
             <span>一键导出：多格式输出，适配不同场景</span>
           </li>
         </ul>
-        <Link href="/resume-import" className="btn-primary mt-6 lg:mt-14">
+        <Link href="/resume-builder" className="btn-primary mt-6 lg:mt-14">
           立即开始 <span aria-hidden="true">→</span>
         </Link>
         <p className="ml-6 mt-3 text-sm text-gray-600">无需注册</p>
