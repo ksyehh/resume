@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
-import { ResumeIframeCSR } from "components/Resume/ResumeIFrame";
-import { ResumePDF } from "components/Resume/ResumePDF";
+import { BuilderResumeIframeCSR } from "components/Resume/BuilderResumeIframe";
+import { BuilderResumePDF } from "components/Resume/ResumePDF/BuilderResumePDF";
 import {
   ResumeControlBarCSR,
   ResumeControlBarBorder,
@@ -22,7 +22,7 @@ export const Resume = () => {
   const resume = useAppSelector(selectResume);
   const settings = useAppSelector(selectSettings);
   const document = useMemo(
-    () => <ResumePDF resume={resume} settings={settings} isPDF={true} mode="builder" />,
+    () => <BuilderResumePDF resume={resume} settings={settings} isPDF={true} />,
     [resume, settings]
   );
 
@@ -36,19 +36,17 @@ export const Resume = () => {
         <FlexboxSpacer maxWidth={50} className="hidden md:block" />
         <div className="relative">
           <section className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] md:p-[var(--resume-padding)] md:pt-6">
-            <ResumeIframeCSR
+            <BuilderResumeIframeCSR
               documentSize={settings.documentSize}
               scale={scale}
               enablePDFViewer={DEBUG_RESUME_PDF_FLAG}
-              mode="builder"
             >
-              <ResumePDF
+              <BuilderResumePDF
                 resume={resume}
                 settings={settings}
                 isPDF={DEBUG_RESUME_PDF_FLAG}
-                mode="builder"
               />
-            </ResumeIframeCSR>
+            </BuilderResumeIframeCSR>
           </section>
           <ResumeControlBarCSR
             scale={scale}

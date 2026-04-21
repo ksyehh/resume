@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { ResumePDF } from "components/Resume/ResumePDF";
+import { HomeResumePDF } from "components/Resume/ResumePDF/HomeResumePDF";
 import { initialSettings } from "lib/redux/settingsSlice";
-import { ResumeIframeCSR } from "components/Resume/ResumeIFrame";
+import { HomeResumeIframeCSR } from "components/Resume/HomeResumeIframe";
 import { START_HOME_RESUME, END_HOME_RESUME } from "home/constants";
 import {
   START_HOME_RESUME_ZH,
@@ -76,8 +76,8 @@ export const AutoTypingResume = () => {
 
   return (
     <>
-      <ResumeIframeCSR documentSize="A4" scale={isLg ? 0.7 : 0.5} mode="home">
-        <ResumePDF
+      <HomeResumeIframeCSR documentSize="A4" scale={isLg ? 0.7 : 0.5}>
+        <HomeResumePDF
           resume={resume}
           settings={{
             ...initialSettings,
@@ -99,9 +99,8 @@ export const AutoTypingResume = () => {
               custom: th("custom"),
             },
           }}
-          mode="home"
         />
-      </ResumeIframeCSR>
+      </HomeResumeIframeCSR>
     </>
   );
 };
