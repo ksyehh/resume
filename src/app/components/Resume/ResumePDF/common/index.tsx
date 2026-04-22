@@ -83,6 +83,9 @@ export const ResumePDFBulletList = ({
   items: string[];
   showBulletPoints?: boolean;
 }) => {
+  if (!items || items.length === 0) {
+    return null;
+  }
   return (
     <View style={{ ...styles.flexCol }}>
       {items.map((item, idx) => (

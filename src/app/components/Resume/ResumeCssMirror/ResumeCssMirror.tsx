@@ -76,6 +76,9 @@ function BulletList({
   showBulletPoints?: boolean;
 }) {
   const pl = spacingPx(2);
+  if (!items || items.length === 0) {
+    return null;
+  }
   return (
     <div className="flex flex-col">
       {items.map((item, idx) => (

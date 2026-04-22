@@ -11,15 +11,15 @@ const PDFJS_DIST_VERSION = "3.7.107";
 
 let pdfWorkerConfigured = false;
 
-/** Browser: webpack worker chunk URL. Node (e.g. `npm run eval:zh-resumes`): file URL to pdf.worker.min.js. */
+/** Browser: use CDN worker for reliability. Node: file URL. */
 function ensurePdfjsWorker(): void {
   if (pdfWorkerConfigured) return;
   pdfWorkerConfigured = true;
 
   if (typeof window !== "undefined") {
-    // webpack resolves worker entry to a URL string (see pdf.worker.entry.js).
-    // eslint-disable-next-line -- pdfjs worker bootstrap
-    const src = require("pdfjs-dist/build/pdf.worker.entry") as string;
+    // 直接使用 CDN worker，更可靠
+    const src = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_DIST_VERSION}/build/pdf.worker.min.js`;
+    console.log("设置 pdf.js worker:", src);
     pdfjs.GlobalWorkerOptions.workerSrc = src;
   } else {
     // eslint-disable-next-line -- Node-only path bootstrap for eval scripts
@@ -38,9 +38,13 @@ function ensurePdfjsWorker(): void {
  */
 function getPdfJsAssetBaseUrl(): string {
   if (typeof window !== "undefined" && window.location?.origin) {
-    return `${window.location.origin}/pdfjs/`;
+    const localBase = `${window.location.origin}/pdfjs/`;
+    console.log("使用本地 pdfjs assets:", localBase);
+    return localBase;
   }
-  return `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_DIST_VERSION}/`;
+  const cdnBase = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_DIST_VERSION}/`;
+  console.log("使用 CDN pdfjs assets:", cdnBase);
+  return cdnBase;
 }
 
 export type ReadPdfOptions = {
@@ -67,79 +71,97 @@ export const readPdf = async (
 ): Promise<TextItems> => {
   ensurePdfjsWorker();
   const base = options?.pdfJsAssetBaseUrl ?? getPdfJsAssetBaseUrl();
-  const pdfFile = await pdfjs
-    .getDocument({
-      url: fileUrl,
-      cMapUrl: `${base}cmaps/`,
-      cMapPacked: true,
-      standardFontDataUrl: `${base}standard_fonts/`,
-    })
-    .promise;
-  let textItems: TextItems = [];
+  console.log("正在加载 PDF...");
+  
+  try {
+    const pdfFile = await pdfjs
+      .getDocument({
+        url: fileUrl,
+        cMapUrl: `${base}cmaps/`,
+        cMapPacked: true,
+        standardFontDataUrl: `${base}standard_fonts/`,
+        useSystemFonts: true,
+      })
+      .promise;
+    
+    console.log(`PDF 加载成功，共 ${pdfFile.numPages} 页`);
+    let textItems: TextItems = [];
 
-  for (let i = 1; i <= pdfFile.numPages; i++) {
-    // Parse each page into text content
-    const page = await pdfFile.getPage(i);
-    const textContent = await page.getTextContent();
+    for (let i = 1; i <= pdfFile.numPages; i++) {
+      console.log(`正在处理第 ${i} 页...`);
+      // Parse each page into text content
+      const page = await pdfFile.getPage(i);
+      const textContent = await page.getTextContent();
+      console.log(`第 ${i} 页原始 items 数量:`, textContent.items.length);
 
-    // Wait for font data to be loaded
-    await page.getOperatorList();
-    const commonObjs = page.commonObjs;
+      // Wait for font data to be loaded
+      await page.getOperatorList();
+      const commonObjs = page.commonObjs;
 
-    // Convert Pdfjs TextItem type to new TextItem type
-    const pageTextItems = textContent.items.map((item) => {
-      const {
-        str: text,
-        dir, // Remove text direction
-        transform,
-        fontName: pdfFontName,
-        ...otherProps
-      } = item as PdfjsTextItem;
+      // Convert Pdfjs TextItem type to new TextItem type
+      const pageTextItems = textContent.items.map((item) => {
+        const {
+          str: text,
+          dir, // Remove text direction
+          transform,
+          fontName: pdfFontName,
+          ...otherProps
+        } = item as PdfjsTextItem;
 
-      // Extract x, y position of text item from transform.
-      // As a side note, origin (0, 0) is bottom left.
-      // Reference: https://github.com/mozilla/pdf.js/issues/5643#issuecomment-496648719
-      const x = transform[4];
-      const y = transform[5];
+        // Extract x, y position of text item from transform.
+        // As a side note, origin (0, 0) is bottom left.
+        // Reference: https://github.com/mozilla/pdf.js/issues/5643#issuecomment-496648719
+        const x = transform[4];
+        const y = transform[5];
 
-      // Use commonObjs to convert font name to original name (e.g. "GVDLYI+Arial-BoldMT")
-      // since non system font name by default is a loaded name, e.g. "g_d8_f1"
-      // Reference: https://github.com/mozilla/pdf.js/pull/15659
-      const fontObj = commonObjs.get(pdfFontName);
-      const fontName = fontObj?.name ?? pdfFontName;
+        // Use commonObjs to convert font name to original name (e.g. "GVDLYI+Arial-BoldMT")
+        // since non system font name by default is a loaded name, e.g. "g_d8_f1"
+        // Reference: https://github.com/mozilla/pdf.js/pull/15659
+        const fontObj = commonObjs.get(pdfFontName);
+        const fontName = fontObj?.name ?? pdfFontName;
 
-      // pdfjs reads a "-" as "-­‐" in the resume example. This is to revert it.
-      // Note "-­‐" is "-&#x00AD;‐" with a soft hyphen in between. It is not the same as "--"
-      const newText = text.replace(/-­‐/g, "-");
+        // pdfjs reads a "-" as "-­‐" in the resume example. This is to revert it.
+        // Note "-­‐" is "-&#x00AD;‐" with a soft hyphen in between. It is not the same as "--"
+        const newText = text.replace(/-­‐/g, "-");
 
-      const newItem = {
-        ...otherProps,
-        fontName,
-        text: newText,
-        x,
-        y,
-      };
-      return newItem;
-    });
+        const newItem = {
+          ...otherProps,
+          fontName,
+          text: newText,
+          x,
+          y,
+        };
+        return newItem;
+      });
 
-    // Some pdf's text items are not in order. This is most likely a result of creating it
-    // from design softwares, e.g. canvas. The commented out method can sort pageTextItems
-    // by y position to put them back in order. But it is not used since it might be more
-    // helpful to let users know that the pdf is not in order.
-    // pageTextItems.sort((a, b) => Math.round(b.y) - Math.round(a.y));
+      console.log(`第 ${i} 页处理后 items 数量:`, pageTextItems.length);
 
-    // Add text items of each page to total
-    textItems.push(...pageTextItems);
+      // Some pdf's text items are not in order. This is most likely a result of creating it
+      // from design softwares, e.g. canvas. The commented out method can sort pageTextItems
+      // by y position to put them back in order. But it is not used since it might be more
+      // helpful to let users know that the pdf is not in order.
+      // pageTextItems.sort((a, b) => Math.round(b.y) - Math.round(a.y));
+
+      // Add text items of each page to total
+      textItems.push(...pageTextItems);
+    }
+
+    console.log(`过滤前总 items 数量:`, textItems.length);
+
+    // Filter out empty space textItem noise
+    const isEmptySpace = (textItem: TextItem) =>
+      !textItem.hasEOL && textItem.text.trim() === "";
+    textItems = textItems.filter((textItem) => !isEmptySpace(textItem));
+    
+    console.log(`过滤后总 items 数量:`, textItems.length);
+
+    for (const item of textItems) {
+      item.text = normalizePdfText(item.text);
+    }
+
+    return textItems;
+  } catch (error) {
+    console.error("readPdf 错误:", error);
+    throw error;
   }
-
-  // Filter out empty space textItem noise
-  const isEmptySpace = (textItem: TextItem) =>
-    !textItem.hasEOL && textItem.text.trim() === "";
-  textItems = textItems.filter((textItem) => !isEmptySpace(textItem));
-
-  for (const item of textItems) {
-    item.text = normalizePdfText(item.text);
-  }
-
-  return textItems;
 };
