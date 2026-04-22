@@ -10,6 +10,7 @@ import { ShowForm, selectFormsOrder } from "lib/redux/settingsSlice";
 import { ProfileForm } from "components/ResumeForm/ProfileForm";
 import { extractTextOnlyFromPdf } from "lib/parse-resume-from-pdf/extract-text-only";
 import { resumeRehydrationDefaults, setResume, selectResume } from "lib/redux/resumeSlice";
+import { clearScoreResult } from "lib/redux/scoreSlice";
 import { WorkExperiencesForm } from "components/ResumeForm/WorkExperiencesForm";
 import { EducationsForm } from "components/ResumeForm/EducationsForm";
 import { ProjectsForm } from "components/ResumeForm/ProjectsForm";
@@ -18,6 +19,7 @@ import { ThemeForm } from "components/ResumeForm/ThemeForm";
 import { CustomForm } from "components/ResumeForm/CustomForm";
 import { PersonalSummaryForm } from "components/ResumeForm/PersonalSummaryForm";
 import { ParseLoadingOverlay } from "components/Loading";
+import { ResumeScoreSection } from "components/ResumeForm/ResumeScoreSection";
 import { cx } from "lib/cx";
 import { Resume } from "lib/redux/types";
 import { sanitizeResumeText } from "lib/sanitize/sanitize-resume";
@@ -40,6 +42,8 @@ const formTypeToComponent: { [type in ShowForm]: () => JSX.Element } = {
   custom: CustomForm,
 };
 
+type ActiveView = "edit" | "score";
+
 export const ResumeForm = () => {
   useSetInitialStore();
   useSaveStateToLocalStorageOnChange();
@@ -55,6 +59,7 @@ export const ResumeForm = () => {
   });
   const [isFromAI, setIsFromAI] = useState(false);
   const resumeAfterAIRef = useRef<string>("");
+  const [activeView, setActiveView] = useState<ActiveView>("edit");
 
   const checkAndConfirm = useCallback((action: () => void, message: string) => {
     if (isResumeChanged(resume, resumeRehydrationDefaults)) {
@@ -199,6 +204,7 @@ export const ResumeForm = () => {
       };
 
       dispatch(setResume(normalizedResume));
+      dispatch(clearScoreResult()); // 重置AI打分状态
       resumeAfterAIRef.current = JSON.stringify(normalizedResume);
       setIsFromAI(true);
       setParseState({ status: "success", message: "解析成功！" });
@@ -250,9 +256,37 @@ export const ResumeForm = () => {
         isLoading={parseState.status === "loading"}
         message={parseState.message}
       />
+      {/* 顶部切换按钮 */}
+      <div className="flex justify-center py-4 bg-gray-50 border-b border-gray-200">
+        <div className="flex items-center gap-2 bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+          <button
+            onClick={() => setActiveView("edit")}
+            className={cx(
+              "px-6 py-2 rounded-md text-sm font-medium transition-all",
+              activeView === "edit"
+                ? "bg-blue-500 text-white shadow"
+                : "text-gray-600 hover:bg-gray-50"
+            )}
+          >
+            简历编辑
+          </button>
+          <button
+            onClick={() => setActiveView("score")}
+            className={cx(
+              "px-6 py-2 rounded-md text-sm font-medium transition-all",
+              activeView === "score"
+                ? "bg-blue-500 text-white shadow"
+                : "text-gray-600 hover:bg-gray-50"
+            )}
+          >
+            AI 打分
+          </button>
+        </div>
+      </div>
+      {/* 滑动切换区域 */}
       <div
         className={cx(
-          "flex justify-center scrollbar-thin scrollbar-track-gray-100 md:h-[calc(100vh-var(--top-nav-bar-height))] md:overflow-y-auto scrollbar-hidden",
+          "flex justify-center scrollbar-thin scrollbar-track-gray-100 md:h-[calc(100vh-var(--top-nav-bar-height)-80px)] md:overflow-y-auto scrollbar-hidden overflow-hidden",
           isHover ? "scrollbar-thumb-gray-200" : "scrollbar-thumb-gray-100"
         )}
         style={{
@@ -262,45 +296,65 @@ export const ResumeForm = () => {
         onMouseOver={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
       >
-        <section className="flex w-full max-w-3xl flex-col gap-8 p-4 sm:p-6">
-          <section className="flex flex-col gap-3 rounded-sm bg-white p-5 pt-4 shadow-lg">
-            <div className="flex flex-row gap-3 flex-wrap">
-              <button
-                type="button"
-                onClick={handleImportPDF}
-                className="flex items-center rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:border-gray-400"
-              >
-                导入PDF简历
-              </button>
-              <button
-                type="button"
-                onClick={handleClearContent}
-                className="flex items-center rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:border-gray-400"
-              >
-                清空内容
-              </button>
+        <div className="relative w-full max-w-3xl">
+          {/* 滑动容器 */}
+          <div
+            className="flex transition-transform duration-300 ease-in-out"
+            style={{
+              transform: activeView === "edit" ? "translateX(0)" : "translateX(-100%)",
+            }}
+          >
+            {/* 简历编辑视图 */}
+            <div className="w-full flex-shrink-0 p-4 sm:p-6">
+              <section className="flex w-full flex-col gap-8">
+                <section className="flex flex-col gap-3 rounded-sm bg-white p-5 pt-4 shadow-lg">
+                  <div className="flex flex-row gap-3 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={handleImportPDF}
+                      className="flex items-center rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:border-gray-400"
+                    >
+                      导入PDF简历
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleClearContent}
+                      className="flex items-center rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:border-gray-400"
+                    >
+                      清空内容
+                    </button>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    onChange={handleFileSelect}
+                  />
+                </section>
+                {isFromAI && (
+                  <div className="rounded-sm bg-amber-50 p-3 text-sm text-amber-700 border border-amber-200">
+                    以下内容由AI解析填充，请仔细核对。（个人信息部分请手动填入）
+                  </div>
+                )}
+                <ProfileForm />
+                {formsOrder.map((form) => {
+                  const Component = formTypeToComponent[form];
+                  return <Component key={form} />;
+                })}
+                <ThemeForm />
+                <br />
+              </section>
             </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf"
-              className="hidden"
-              onChange={handleFileSelect}
-            />
-          </section>
-          {isFromAI && (
-            <div className="rounded-sm bg-amber-50 p-3 text-sm text-amber-700 border border-amber-200">
-              以下内容由AI解析填充，请仔细核对。（个人信息部分请手动填入）
+            {/* AI打分视图 */}
+            <div className="w-full flex-shrink-0 p-4 sm:p-6">
+              <section className="flex w-full flex-col">
+                <ResumeScoreSection />
+                <br />
+              </section>
             </div>
-          )}
-          <ProfileForm />
-          {formsOrder.map((form) => {
-            const Component = formTypeToComponent[form];
-            return <Component key={form} />;
-          })}
-          <ThemeForm />
-          <br />
-        </section>
+          </div>
+        </div>
       </div>
     </>
   );

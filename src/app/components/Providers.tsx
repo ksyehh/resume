@@ -5,6 +5,7 @@ import { LocaleProvider } from "lib/i18n/LocaleProvider";
 import { DocumentLang } from "lib/i18n/DocumentLang";
 import { Provider } from "react-redux";
 import { store } from "lib/redux/store";
+import { ToastProvider } from "components/Toast";
 
 export function Providers({
   children,
@@ -17,7 +18,9 @@ export function Providers({
     <Provider store={store}>
       <LocaleProvider initialLocale={initialLocale}>
         <DocumentLang />
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </LocaleProvider>
     </Provider>
   );

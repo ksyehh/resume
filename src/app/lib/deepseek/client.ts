@@ -70,6 +70,40 @@ export interface ParseResumeResponse {
   };
 }
 
+export interface ScoreBreakdown {
+  completeness: number;
+  clarity: number;
+  impact: number;
+  structure: number;
+  professionalism: number;
+}
+
+export interface Score {
+  total: number;
+  level: "较差" | "一般" | "良好" | "优秀";
+  breakdown: ScoreBreakdown;
+}
+
+export interface ScoreExplanation {
+  summary: string;
+  key_reasons: string[];
+  risk: string;
+}
+
+export interface Issue {
+  type: string;
+  description: string;
+  suggestion: string;
+}
+
+export interface ScoreResumeResponse {
+  score: Score;
+  score_explanation: ScoreExplanation;
+  fatal_issue: string;
+  issues: Issue[];
+  optimized_resume: ParseResumeResponse;
+}
+
 export async function callDeepSeek(
   messages: DeepSeekMessage[],
   model: string = "deepseek-chat"

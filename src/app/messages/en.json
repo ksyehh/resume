@@ -57,7 +57,33 @@
   },
   "resumeControlBar": {
     "autoscale": "Autoscale",
-    "downloadResume": "Download Resume"
+    "downloadResume": "Download Resume",
+    "aiScore": "AI Score"
+  },
+  "scorePanel": {
+    "loading": "AI analyzing, please wait",
+    "totalScore": "Total Score",
+    "level": {
+      "poor": "Poor",
+      "average": "Average",
+      "good": "Good",
+      "excellent": "Excellent"
+    },
+    "breakdown": {
+      "completeness": "Completeness",
+      "clarity": "Clarity",
+      "impact": "Impact",
+      "structure": "Structure",
+      "professionalism": "Professionalism"
+    },
+    "issues": "Issues",
+    "fatalIssue": "Fatal Issue",
+    "optimizeBtn": "One-Click AI Optimize",
+    "optimizing": "Optimizing...",
+    "scoreExplanation": "Score Explanation",
+    "keyReasons": "Key Reasons",
+    "risk": "Risk",
+    "privacyNote": "Personal info is masked and won't be sent to AI"
   },
   "resumeForm": {
     "profile": {

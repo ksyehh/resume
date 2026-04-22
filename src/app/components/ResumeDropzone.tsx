@@ -9,6 +9,7 @@ import {
   saveStateToLocalStorage,
 } from "lib/redux/local-storage";
 import { type ShowForm, initialSettings } from "lib/redux/settingsSlice";
+import { initialScoreState } from "lib/redux/scoreSlice";
 import { useRouter } from "next/navigation";
 import addPdfSrc from "public/assets/add-pdf.svg";
 import Image from "next/image";
@@ -95,7 +96,7 @@ export const ResumeDropzone = ({
       }
     }
 
-    saveStateToLocalStorage({ resume, settings });
+    saveStateToLocalStorage({ resume, settings, score: initialScoreState });
     router.push("/resume-builder");
   };
 

@@ -57,7 +57,33 @@
   },
   "resumeControlBar": {
     "autoscale": "自动缩放",
-    "downloadResume": "下载简历"
+    "downloadResume": "下载简历",
+    "aiScore": "AI 打分"
+  },
+  "scorePanel": {
+    "loading": "AI 分析中，请稍后",
+    "totalScore": "总分",
+    "level": {
+      "poor": "较差",
+      "average": "一般",
+      "good": "良好",
+      "excellent": "优秀"
+    },
+    "breakdown": {
+      "completeness": "内容完整性",
+      "clarity": "表达清晰度",
+      "impact": "成果导向",
+      "structure": "结构与可读性",
+      "professionalism": "专业度与竞争力"
+    },
+    "issues": "问题诊断",
+    "fatalIssue": "致命问题",
+    "optimizeBtn": "一键AI优化",
+    "optimizing": "优化中...",
+    "scoreExplanation": "评分说明",
+    "keyReasons": "关键原因",
+    "risk": "风险提示",
+    "privacyNote": "个人隐私信息已屏蔽，不会传给AI"
   },
   "resumeForm": {
     "profile": {

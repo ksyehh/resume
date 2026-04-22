@@ -21,6 +21,7 @@ export const Resume = () => {
   const [previewContainerWidth, setPreviewContainerWidth] = useState(0);
   const resume = useAppSelector(selectResume);
   const settings = useAppSelector(selectSettings);
+  
   const document = useMemo(
     () => <BuilderResumePDF resume={resume} settings={settings} isPDF={true} />,
     [resume, settings]
