@@ -31,6 +31,22 @@ export default function RootLayout({
 
   return (
     <html lang={htmlLang} suppressHydrationWarning>
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/NotoSansSC-Regular.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/NotoSansSC-Bold.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <Providers initialLocale={initialLocale}>
           <TopNavBar />

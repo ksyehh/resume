@@ -19,12 +19,14 @@ import { spacingPx } from "components/Resume/ResumeCssMirror/spacingPx";
 import type { Resume } from "lib/redux/types";
 import type { Settings } from "lib/redux/settingsSlice";
 import { DEFAULT_FONT_COLOR } from "lib/redux/settingsSlice";
+import { Loading } from "components/Loading";
 
 type Props = {
   resume: Resume;
   settings: Settings;
   /** 与左侧表单栏 `max-w-2xl` 内容区等宽，用于计算缩放使 A4 宽度贴合容器 */
   containerWidth: number;
+  isFontLoaded: boolean;
 };
 
 const MEASURE_DEBOUNCE_MS = 110;
@@ -82,6 +84,7 @@ export function ResumeCssPagedPreview({
   resume,
   settings,
   containerWidth,
+  isFontLoaded,
 }: Props) {
   const measureRef = useRef<HTMLDivElement>(null);
   const [totalHeight, setTotalHeight] = useState(0);
@@ -111,15 +114,10 @@ export function ResumeCssPagedPreview({
   }, [resume, settings, debouncedMeasure]);
 
   useEffect(() => {
-    let cancelled = false;
-    const run = () => {
-      if (!cancelled) measureHeight();
-    };
-    void document.fonts.ready.then(run);
-    return () => {
-      cancelled = true;
-    };
-  }, [measureHeight]);
+    if (isFontLoaded) {
+      measureHeight();
+    }
+  }, [isFontLoaded, measureHeight]);
 
   useEffect(() => {
     const el = measureRef.current;
@@ -166,46 +164,52 @@ export function ResumeCssPagedPreview({
       </div>
 
       <div className="flex flex-col items-center pb-4">
-        {pages.map((pageIndex) => (
-          <div
-            key={pageIndex}
-            className="origin-top-left overflow-hidden rounded-sm bg-white shadow-lg"
-            style={{
-              ...paperStyle,
-              height: docHeight * scale,
-            }}
-          >
+        {!isFontLoaded ? (
+          <div className="flex items-center justify-center py-20">
+            <Loading message="字体加载中..." />
+          </div>
+        ) : (
+          pages.map((pageIndex) => (
             <div
+              key={pageIndex}
+              className="origin-top-left overflow-hidden rounded-sm bg-white shadow-lg"
               style={{
-                transform: `scale(${scale})`,
-                transformOrigin: "top left",
-                width: docWidth,
-                height: docHeight,
+                ...paperStyle,
+                height: docHeight * scale,
               }}
             >
               <div
-                className="box-border overflow-hidden bg-white"
                 style={{
+                  transform: `scale(${scale})`,
+                  transformOrigin: "top left",
+                  width: docWidth,
                   height: docHeight,
-                  padding: pad,
                 }}
               >
                 <div
-                  className="overflow-hidden"
-                  style={{ height: innerViewportHeight }}
+                  className="box-border overflow-hidden bg-white"
+                  style={{
+                    height: docHeight,
+                    padding: pad,
+                  }}
                 >
                   <div
-                    style={{
-                      transform: `translateY(-${pageIndex * innerViewportHeight}px)`,
-                    }}
+                    className="overflow-hidden"
+                    style={{ height: innerViewportHeight }}
                   >
-                    <MirrorColumn resume={resume} settings={settings} />
+                    <div
+                      style={{
+                        transform: `translateY(-${pageIndex * innerViewportHeight}px)`,
+                      }}
+                    >
+                      <MirrorColumn resume={resume} settings={settings} />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </>
   );

@@ -1,12 +1,6 @@
 "use client";
-import { useMemo, useLayoutEffect, useRef, useState } from "react";
-import { BuilderResumePDF } from "components/Resume/ResumePDF/BuilderResumePDF";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { ResumeCssPagedPreview } from "components/Resume/ResumeCssPagedPreview";
-import {
-  ResumeControlBarCSR,
-  ResumeControlBarBorder,
-} from "components/Resume/ResumeControlBar";
-import { FlexboxSpacer } from "components/FlexboxSpacer";
 import { useAppSelector } from "lib/redux/hooks";
 import { selectResume } from "lib/redux/resumeSlice";
 import { selectSettings } from "lib/redux/settingsSlice";
@@ -19,16 +13,12 @@ import { NonEnglishFontsCSSLazyLoader } from "components/fonts/NonEnglishFontsCS
 export const Resume = () => {
   const previewWidthRef = useRef<HTMLDivElement>(null);
   const [previewContainerWidth, setPreviewContainerWidth] = useState(0);
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
   const resume = useAppSelector(selectResume);
   const settings = useAppSelector(selectSettings);
   
-  const document = useMemo(
-    () => <BuilderResumePDF resume={resume} settings={settings} isPDF={true} />,
-    [resume, settings]
-  );
-
   useRegisterReactPDFFont();
-  useRegisterReactPDFHyphenationCallback(settings.fontFamily);
+  useRegisterReactPDFHyphenationCallback();
 
   useLayoutEffect(() => {
     const el = previewWidthRef.current;
@@ -45,6 +35,16 @@ export const Resume = () => {
     return () => ro.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.document.fonts && window.document.fonts.ready) {
+      window.document.fonts.ready.then(() => {
+        setIsFontLoaded(true);
+      });
+    } else {
+      setIsFontLoaded(true);
+    }
+  }, []);
+
   return (
     <>
       <NonEnglishFontsCSSLazyLoader />
@@ -56,6 +56,7 @@ export const Resume = () => {
                 resume={resume}
                 settings={settings}
                 containerWidth={previewContainerWidth}
+                isFontLoaded={isFontLoaded}
               />
             </div>
           </section>
