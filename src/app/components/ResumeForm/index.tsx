@@ -286,7 +286,7 @@ export const ResumeForm = () => {
       {/* 滑动切换区域 */}
       <div
         className={cx(
-          "flex justify-center scrollbar-thin scrollbar-track-gray-100 md:h-[calc(100vh-var(--top-nav-bar-height)-80px)] md:overflow-y-auto scrollbar-hidden overflow-hidden",
+          "flex justify-center scrollbar-thin scrollbar-track-gray-100 md:h-[calc(100vh-var(--top-nav-bar-height)-80px)] scrollbar-hidden overflow-hidden",
           isHover ? "scrollbar-thumb-gray-200" : "scrollbar-thumb-gray-100"
         )}
         style={{
@@ -296,16 +296,19 @@ export const ResumeForm = () => {
         onMouseOver={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
       >
-        <div className="relative w-full max-w-3xl">
+        <div className="relative w-full max-w-3xl h-full">
           {/* 滑动容器 */}
           <div
-            className="flex transition-transform duration-300 ease-in-out"
+            className="flex transition-transform duration-300 ease-in-out h-full"
             style={{
               transform: activeView === "edit" ? "translateX(0)" : "translateX(-100%)",
             }}
           >
             {/* 简历编辑视图 */}
-            <div className="w-full flex-shrink-0 p-4 sm:p-6">
+            <div 
+              className="w-full flex-shrink-0 p-4 sm:p-6 h-full overflow-y-auto scrollbar-hidden"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
               <section className="flex w-full flex-col gap-8">
                 <section className="flex flex-col gap-3 rounded-sm bg-white p-5 pt-4 shadow-lg">
                   <div className="flex flex-row gap-3 flex-wrap">
@@ -347,7 +350,10 @@ export const ResumeForm = () => {
               </section>
             </div>
             {/* AI打分视图 */}
-            <div className="w-full flex-shrink-0 p-4 sm:p-6">
+            <div 
+              className="w-full flex-shrink-0 p-4 sm:p-6 h-full overflow-y-auto scrollbar-hidden"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
               <section className="flex w-full flex-col">
                 <ResumeScoreSection />
                 <br />
