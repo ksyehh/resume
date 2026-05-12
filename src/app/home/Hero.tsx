@@ -26,7 +26,7 @@ export const Hero = () => {
           </li>
           <li className="flex items-center gap-2">
             <span className="inline-block h-2 w-2 rounded-full bg-primary"></span>
-            <span>一键导出：多格式输出，适配不同场景</span>
+            <span>隐私保护：简历内容本地存储，个人信息不传给 AI</span>
           </li>
         </ul>
         <Link href="/resume-builder" className="btn-primary mt-6 lg:mt-14">
