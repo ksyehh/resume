@@ -6,6 +6,11 @@ import {
 } from "lib/deepseek/client";
 import { buildResumeParseMessages } from "lib/deepseek/prompts";
 import { sanitizeResumeText } from "lib/sanitize/sanitize-resume";
+import {
+  checkPdfRateLimit,
+  incrementPdfUsage,
+  createRateLimitResponse,
+} from "lib/rate-limit";
 
 export interface ParseResumeRequest {
   text: string;
@@ -13,6 +18,11 @@ export interface ParseResumeRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitResult = await checkPdfRateLimit(request);
+    if (!rateLimitResult.allowed) {
+      return createRateLimitResponse(rateLimitResult);
+    }
+
     const body: ParseResumeRequest = await request.json();
 
     if (!body.text || typeof body.text !== "string") {
@@ -30,6 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     const sanitizedText = sanitizeResumeText(body.text);
+    await incrementPdfUsage(request);
 
     const messages = buildResumeParseMessages(sanitizedText);
     const rawResponse = await callDeepSeek(messages);

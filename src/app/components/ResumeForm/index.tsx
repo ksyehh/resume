@@ -23,6 +23,7 @@ import { ResumeScoreSection } from "components/ResumeForm/ResumeScoreSection";
 import { cx } from "lib/cx";
 import { Resume } from "lib/redux/types";
 import { sanitizeResumeText } from "lib/sanitize/sanitize-resume";
+import { checkPdfLimit, incrementPdfUsage } from "lib/hooks/useUsageLimit";
 
 interface ParseState {
   status: "idle" | "loading" | "success" | "error";
@@ -107,6 +108,12 @@ export const ResumeForm = () => {
       return;
     }
 
+    const pdfCheck = checkPdfLimit();
+    if (!pdfCheck.allowed) {
+      alert(pdfCheck.reason || "今日上传次数已用完");
+      return;
+    }
+
     const fileUrl = URL.createObjectURL(file);
 
     setParseState({ status: "loading", message: "AI 解析中..." });
@@ -137,6 +144,8 @@ export const ResumeForm = () => {
       if (!result.success) {
         throw new Error(result.error || "AI解析失败");
       }
+
+      incrementPdfUsage();
 
       const normalizedResume: Resume = {
         profile: {

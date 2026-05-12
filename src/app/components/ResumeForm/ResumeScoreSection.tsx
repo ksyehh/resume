@@ -19,6 +19,7 @@ import {
   getResumeHash,
   calculateDifferenceRate,
 } from "lib/redux/scoreSlice";
+import { checkAiLimit, incrementAiUsage } from "lib/hooks/useUsageLimit";
 
 const ScoreProgressBar = ({ label, score, maxScore }: { label: string; score: number; maxScore: number }) => {
   const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
@@ -137,6 +138,12 @@ export const ResumeScoreSection = () => {
   };
 
   const handleAiScore = async () => {
+    const aiCheck = checkAiLimit();
+    if (!aiCheck.allowed) {
+      showToast({ message: aiCheck.reason || "今日AI次数已用完", type: "error" });
+      return;
+    }
+
     const currentResumeHash = getResumeHash(resume);
     
     // 检查是否有上次记录的简历
@@ -164,6 +171,7 @@ export const ResumeScoreSection = () => {
       const data = await response.json();
 
       if (data.success) {
+        incrementAiUsage();
         dispatch(setScoreResult({ result: data.data, resumeHash: currentResumeHash }));
       } else {
         dispatch(setScoringError(data.error || "Unknown error"));

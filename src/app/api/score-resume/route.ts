@@ -7,6 +7,11 @@ import {
 } from "lib/deepseek/client";
 import { buildResumeScoreMessages } from "lib/deepseek/prompts";
 import type { Resume } from "lib/redux/types";
+import {
+  checkAiRateLimit,
+  incrementAiUsage,
+  createRateLimitResponse,
+} from "lib/rate-limit";
 
 export interface ScoreResumeRequest {
   resume: Resume;
@@ -14,6 +19,11 @@ export interface ScoreResumeRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitResult = await checkAiRateLimit(request);
+    if (!rateLimitResult.allowed) {
+      return createRateLimitResponse(rateLimitResult);
+    }
+
     const body: ScoreResumeRequest = await request.json();
 
     if (!body.resume) {
@@ -25,6 +35,7 @@ export async function POST(request: NextRequest) {
 
     const messages = buildResumeScoreMessages(body.resume);
     const rawResponse = await callDeepSeek(messages);
+    await incrementAiUsage(request);
 
     const parsedData = parseJsonWithRetry<ScoreResumeResponse>(rawResponse);
 

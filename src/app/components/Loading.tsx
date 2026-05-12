@@ -70,7 +70,7 @@ export function ParseLoadingOverlay({
       <div className="flex flex-col items-center gap-4 rounded-xl bg-white p-8 shadow-xl">
         <Loading message={message} size="lg" />
         <p className="text-sm text-green-600 font-medium">
-          个人隐私信息已屏蔽，不会传给AI
+          个人隐私信息已过滤，不会传给AI
         </p>
       </div>
     </div>
