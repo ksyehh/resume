@@ -7,8 +7,8 @@ export interface UsageLimits {
 }
 
 const STORAGE_KEY = "resume_usage";
-const PDF_LIMIT = 30;
-const AI_LIMIT = 30;
+const PDF_LIMIT = 2;
+const AI_LIMIT = 2;
 
 function getToday(): string {
   return new Date().toISOString().split("T")[0];

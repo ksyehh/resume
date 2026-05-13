@@ -13,8 +13,8 @@ export interface RateLimitResult {
   error?: string;
 }
 
-const PDF_LIMIT = 30;
-const AI_LIMIT = 30;
+const PDF_LIMIT = 2;
+const AI_LIMIT = 2;
 const RATE_LIMIT_WINDOW = 60;
 const RATE_LIMIT_MAX = 2;
 
