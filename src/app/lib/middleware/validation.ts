@@ -96,7 +96,9 @@ export async function apiValidationMiddleware(
 
     // 如果是JSON请求
     if (contentType?.includes("application/json")) {
-      const body = await request.json();
+      // 克隆request以避免body被消耗
+      const clonedRequest = request.clone();
+      const body = await clonedRequest.json();
 
       // 如果需要文本验证
       if (requireText) {
@@ -114,7 +116,9 @@ export async function apiValidationMiddleware(
 
     // 如果是文件上传请求
     if (contentType?.includes("multipart/form-data")) {
-      const formData = await request.formData();
+      // 克隆request以避免body被消耗
+      const clonedRequest = request.clone();
+      const formData = await clonedRequest.formData();
       const file = formData.get("file") as File;
 
       if (file) {

@@ -12,7 +12,7 @@ import {
   incrementAiUsage,
   createRateLimitResponse,
 } from "lib/rate-limit";
-import { apiValidationMiddleware, sanitizeObject } from "lib/middleware/validation";
+import { apiValidationMiddleware, sanitizeObject, truncateForAi } from "lib/middleware/validation";
 
 export interface ScoreResumeRequest {
   resume: Resume;
@@ -41,6 +41,12 @@ export async function POST(request: NextRequest) {
     
     if (resumeText.length > AI_INPUT_MAX_LENGTH) {
       console.warn(`Resume data exceeds ${AI_INPUT_MAX_LENGTH} characters, truncating`);
+      const truncatedText = truncateForAi(resumeText, AI_INPUT_MAX_LENGTH);
+      try {
+        body.resume = JSON.parse(truncatedText) as Resume;
+      } catch {
+        console.error("Failed to parse truncated resume data");
+      }
     }
 
     // 清理简历数据中的恶意内容（方案A：递归清理所有字符串字段）

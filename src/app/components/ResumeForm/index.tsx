@@ -46,7 +46,7 @@ const formTypeToComponent: { [type in ShowForm]: () => JSX.Element } = {
 type ActiveView = "edit" | "score";
 
 export const ResumeForm = () => {
-  useSetInitialStore();
+  const isInitialLoading = useSetInitialStore();
   useSaveStateToLocalStorageOnChange();
 
   const dispatch = useAppDispatch();
@@ -265,6 +265,14 @@ export const ResumeForm = () => {
         isLoading={parseState.status === "loading"}
         message={parseState.message}
       />
+      {isInitialLoading && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-gray-50/80 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-sky-200 border-t-sky-500" />
+            <p className="text-sm text-gray-600">正在加载上次编辑的数据...</p>
+          </div>
+        </div>
+      )}
       {/* 顶部切换按钮 */}
       <div className="flex justify-center py-4 bg-gray-50 border-b border-gray-200">
         <div className="flex items-center gap-2 bg-white rounded-lg p-1 shadow-sm border border-gray-200">

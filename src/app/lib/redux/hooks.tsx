@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   useDispatch,
   useSelector,
@@ -18,6 +18,7 @@ import {
 } from "lib/redux/settingsSlice";
 import { deepMerge } from "lib/deep-merge";
 import { fillMissingFromDefaults } from "lib/redux/fill-missing-from-defaults";
+import { getPreloadedState } from "lib/resume-preloader";
 import type { Resume } from "lib/redux/types";
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -37,13 +38,29 @@ export const useSaveStateToLocalStorageOnChange = () => {
 
 export const useSetInitialStore = () => {
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    const preloadState = getPreloadedState();
+
+    if (preloadState.isLoaded && preloadState.resume) {
+      dispatch(setResume(preloadState.resume));
+      setIsLoading(false);
+      return;
+    }
+
+    if (preloadState.isLoaded && !preloadState.resume) {
+      setIsLoading(false);
+      return;
+    }
+
     const state = loadStateFromLocalStorage();
-    if (!state) return;
+    if (!state) {
+      setIsLoading(false);
+      return;
+    }
+
     if (state.resume) {
-      // We merge the initial state with the stored state to ensure
-      // backward compatibility, since new fields might be added to
-      // the initial state over time.
       const mergedResumeState = deepMerge(
         resumeRehydrationDefaults,
         state.resume
@@ -54,6 +71,7 @@ export const useSetInitialStore = () => {
       );
       dispatch(setResume(mergedResumeState));
     }
+
     if (state.settings) {
       const mergedSettingsState = deepMerge(
         initialSettings,
@@ -72,5 +90,9 @@ export const useSetInitialStore = () => {
       }
       dispatch(setSettings(mergedSettingsState));
     }
+
+    setIsLoading(false);
   }, []);
+
+  return isLoading;
 };
