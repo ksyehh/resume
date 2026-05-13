@@ -11,6 +11,7 @@ import {
   incrementPdfUsage,
   createRateLimitResponse,
 } from "lib/rate-limit";
+import { apiValidationMiddleware, truncateForAi } from "lib/middleware/validation";
 
 export interface ParseResumeRequest {
   text: string;
@@ -23,26 +24,21 @@ export async function POST(request: NextRequest) {
       return createRateLimitResponse(rateLimitResult);
     }
 
+    // 使用验证中间件
+    const validationResponse = await apiValidationMiddleware(request);
+    if (validationResponse) {
+      return validationResponse;
+    }
+
     const body: ParseResumeRequest = await request.json();
-
-    if (!body.text || typeof body.text !== "string") {
-      return NextResponse.json(
-        { success: false, error: "Missing or invalid 'text' field" },
-        { status: 400 }
-      );
-    }
-
-    if (body.text.trim().length === 0) {
-      return NextResponse.json(
-        { success: false, error: "Resume text is empty" },
-        { status: 400 }
-      );
-    }
-
     const sanitizedText = sanitizeResumeText(body.text);
+    
+    // 截断文本到10000字符（传给AI的限制）
+    const truncatedText = truncateForAi(sanitizedText);
+
     await incrementPdfUsage(request);
 
-    const messages = buildResumeParseMessages(sanitizedText);
+    const messages = buildResumeParseMessages(truncatedText);
     const rawResponse = await callDeepSeek(messages);
 
     const parsedData = parseJsonWithRetry<ParseResumeResponse>(rawResponse);

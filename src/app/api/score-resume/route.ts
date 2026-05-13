@@ -12,6 +12,7 @@ import {
   incrementAiUsage,
   createRateLimitResponse,
 } from "lib/rate-limit";
+import { apiValidationMiddleware, sanitizeObject } from "lib/middleware/validation";
 
 export interface ScoreResumeRequest {
   resume: Resume;
@@ -26,14 +27,26 @@ export async function POST(request: NextRequest) {
 
     const body: ScoreResumeRequest = await request.json();
 
-    if (!body.resume) {
+    // 验证 resume 对象
+    if (!body.resume || typeof body.resume !== "object") {
       return NextResponse.json(
-        { success: false, error: "Missing resume data" },
+        { success: false, error: "Missing or invalid resume data" },
         { status: 400 }
       );
     }
 
-    const messages = buildResumeScoreMessages(body.resume);
+    // 将 resume 对象序列化为文本，检查传给AI的字符数
+    const resumeText = JSON.stringify(body.resume);
+    const AI_INPUT_MAX_LENGTH = 10000;
+    
+    if (resumeText.length > AI_INPUT_MAX_LENGTH) {
+      console.warn(`Resume data exceeds ${AI_INPUT_MAX_LENGTH} characters, truncating`);
+    }
+
+    // 清理简历数据中的恶意内容（方案A：递归清理所有字符串字段）
+    const sanitizedResume = sanitizeObject(body.resume) as Resume;
+
+    const messages = buildResumeScoreMessages(sanitizedResume);
     const rawResponse = await callDeepSeek(messages);
     await incrementAiUsage(request);
 
