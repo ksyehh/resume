@@ -41,14 +41,17 @@ export async function POST(request: NextRequest) {
 
     if (!parsedData) {
       console.error("Failed to parse DeepSeek response as JSON:", rawResponse);
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Failed to parse AI response as valid JSON",
-          rawResponse,
-        },
-        { status: 500 }
-      );
+      
+      const errorResponse: { success: false; error: string; rawResponse?: string } = {
+        success: false,
+        error: "Failed to parse AI response as valid JSON",
+      };
+      
+      if (process.env.NODE_ENV !== "production") {
+        errorResponse.rawResponse = rawResponse;
+      }
+      
+      return NextResponse.json(errorResponse, { status: 500 });
     }
 
     const result = normalizeScoreResumeResponse(parsedData, body.resume);

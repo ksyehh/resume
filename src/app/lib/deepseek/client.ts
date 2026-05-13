@@ -108,15 +108,14 @@ export async function callDeepSeek(
   messages: DeepSeekMessage[],
   model: string = "deepseek-chat"
 ): Promise<string> {
-  if (!DEEPSEEK_API_KEY) {
-    throw new Error("DEEPSEEK_API_KEY is not configured");
-  }
-
-  const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+  const host = process.env.HOST || "localhost:3000";
+  const baseUrl = `${protocol}://${host}`;
+  
+  const response = await fetch(`${baseUrl}/api/internal/deepseek-proxy`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
     },
     body: JSON.stringify({
       model,
@@ -126,17 +125,17 @@ export async function callDeepSeek(
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`DeepSeek API error: ${response.status} - ${errorText}`);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || "AI service error");
   }
 
-  const data: DeepSeekResponse = await response.json();
+  const data = await response.json();
 
-  if (!data.choices || data.choices.length === 0) {
-    throw new Error("DeepSeek API returned no choices");
+  if (!data.content) {
+    throw new Error("AI service returned no valid response");
   }
 
-  return data.choices[0].message.content;
+  return data.content;
 }
 
 export function parseJsonWithRetry<T>(content: string, maxRetries: number = 2): T | null {

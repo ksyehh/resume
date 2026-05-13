@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import { NextResponse } from "next/server";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -185,8 +186,8 @@ function getNextMinuteTimestamp(): number {
   return next.getTime();
 }
 
-export function createRateLimitResponse(result: RateLimitResult): Response {
-  return Response.json(
+export function createRateLimitResponse(result: RateLimitResult): NextResponse {
+  return NextResponse.json(
     {
       success: false,
       error: result.error || "请求被限制",

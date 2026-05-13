@@ -8,6 +8,7 @@ export interface ScoreState {
   scoreResult: ScoreResumeResponse | null;
   error: string | null;
   lastScoredResumeHash: string | null; // 记录上次成功打分的简历内容
+  hasOptimized: boolean; // 标记是否已经优化过
 }
 
 const initialState: ScoreState = {
@@ -16,6 +17,7 @@ const initialState: ScoreState = {
   scoreResult: null,
   error: null,
   lastScoredResumeHash: null,
+  hasOptimized: false, // 初始状态为未优化
 };
 
 // 生成简历内容的hash（排除隐私字段）
@@ -62,6 +64,7 @@ export const scoreSlice = createSlice({
       state.scoreResult = action.payload.result;
       state.lastScoredResumeHash = action.payload.resumeHash;
       state.error = null;
+      state.hasOptimized = false; // 成功打分后重置为未优化状态，允许再次优化
     },
     setScoringError: (state, action: PayloadAction<string>) => {
       state.isScoring = false;
@@ -80,6 +83,7 @@ export const scoreSlice = createSlice({
     },
     finishOptimizing: (state) => {
       state.isOptimizing = false;
+      state.hasOptimized = true; // 优化完成后标记为已优化
     },
   },
 });
@@ -99,6 +103,7 @@ export const selectIsOptimizing = (state: { score: ScoreState }) => state.score.
 export const selectScoreResult = (state: { score: ScoreState }) => state.score.scoreResult;
 export const selectScoreError = (state: { score: ScoreState }) => state.score.error;
 export const selectLastScoredResumeHash = (state: { score: ScoreState }) => state.score.lastScoredResumeHash;
+export const selectHasOptimized = (state: { score: ScoreState }) => state.score.hasOptimized;
 
 export { initialState as initialScoreState };
 export default scoreSlice.reducer;

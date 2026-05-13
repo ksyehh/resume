@@ -11,6 +11,7 @@ import {
   selectIsOptimizing,
   selectScoreResult,
   selectLastScoredResumeHash,
+  selectHasOptimized,
   startScoring,
   setScoreResult,
   setScoringError,
@@ -113,6 +114,7 @@ export const ResumeScoreSection = () => {
   const isOptimizing = useAppSelector(selectIsOptimizing);
   const scoreResult = useAppSelector(selectScoreResult);
   const lastScoredResumeHash = useAppSelector(selectLastScoredResumeHash);
+  const hasOptimized = useAppSelector(selectHasOptimized);
   const [showOverlay, setShowOverlay] = useState(!scoreResult);
 
   useEffect(() => {
@@ -220,7 +222,10 @@ export const ResumeScoreSection = () => {
 
     dispatch(setResume(newResume));
     dispatch(finishOptimizing());
-    dispatch(clearLastScoredResumeHash());
+    // 不再清空哈希值，让优化后的简历参与差异检查
+    
+    // 显示优化成功提示
+    showToast({ message: "简历已优化", type: "success" });
   };
 
   const currentDisplayResult = scoreResult || mockScoreResult;
@@ -305,11 +310,15 @@ export const ResumeScoreSection = () => {
               {scoreResult?.optimized_resume && (
                 <button
                   onClick={handleOptimize}
-                  disabled={isOptimizing}
-                  className="flex items-center gap-2 rounded border border-green-500 bg-green-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-600 hover:border-green-600 disabled:opacity-50"
+                  disabled={isOptimizing || hasOptimized}
+                  className={`flex items-center gap-2 rounded border px-4 py-2 text-sm font-medium transition-colors ${
+                    isOptimizing || hasOptimized
+                      ? "border-gray-300 bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : "border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600"
+                  }`}
                 >
                   <SparklesIcon className="h-5 w-5" />
-                  <span>{isOptimizing ? t("scorePanel.optimizing") : t("scorePanel.optimizeBtn")}</span>
+                  <span>{isOptimizing ? t("scorePanel.optimizing") : hasOptimized ? "已优化" : t("scorePanel.optimizeBtn")}</span>
                 </button>
               )}
             </div>
