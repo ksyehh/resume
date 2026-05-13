@@ -16,6 +16,7 @@ import {
   setScoringError,
   startOptimizing,
   finishOptimizing,
+  clearLastScoredResumeHash,
   getResumeHash,
   calculateDifferenceRate,
 } from "lib/redux/scoreSlice";
@@ -145,19 +146,17 @@ export const ResumeScoreSection = () => {
     }
 
     const currentResumeHash = getResumeHash(resume);
-    
-    // 检查是否有上次记录的简历
+
     if (lastScoredResumeHash) {
       const differenceRate = calculateDifferenceRate(lastScoredResumeHash, currentResumeHash);
-      
+
       if (differenceRate <= 10) {
         showToast({ message: "当前简历改动较小，没有必要频繁打分。", type: "warning" });
         return;
       }
     }
-    
+
     dispatch(startScoring());
-    setShowOverlay(true);
 
     try {
       const response = await fetch("/api/score-resume", {
@@ -221,6 +220,7 @@ export const ResumeScoreSection = () => {
 
     dispatch(setResume(newResume));
     dispatch(finishOptimizing());
+    dispatch(clearLastScoredResumeHash());
   };
 
   const currentDisplayResult = scoreResult || mockScoreResult;

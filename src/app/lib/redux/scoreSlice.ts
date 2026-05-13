@@ -72,6 +72,9 @@ export const scoreSlice = createSlice({
       state.error = null;
       state.lastScoredResumeHash = null;
     },
+    clearLastScoredResumeHash: (state) => {
+      state.lastScoredResumeHash = null;
+    },
     startOptimizing: (state) => {
       state.isOptimizing = true;
     },
@@ -86,6 +89,7 @@ export const {
   setScoreResult,
   setScoringError,
   clearScoreResult,
+  clearLastScoredResumeHash,
   startOptimizing,
   finishOptimizing,
 } = scoreSlice.actions;
