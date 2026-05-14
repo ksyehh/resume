@@ -1,7 +1,7 @@
 import "globals.css";
 import { cookies } from "next/headers";
 import { TopNavBar } from "components/TopNavBar";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "components/Providers";
 import { LOCALE_PERSIST_KEY } from "lib/i18n/locale-persist-key";
 import type { Locale } from "lib/i18n/locale-types";
