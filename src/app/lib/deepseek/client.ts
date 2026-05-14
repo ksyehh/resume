@@ -108,18 +108,14 @@ export async function callDeepSeek(
   messages: DeepSeekMessage[],
   model: string = "deepseek-chat"
 ): Promise<string> {
-  const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
-  const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com";
-
-  if (!DEEPSEEK_API_KEY) {
-    throw new Error("DEEPSEEK_API_KEY is not configured");
-  }
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+  const host = process.env.HOST || "localhost:3000";
+  const baseUrl = `${protocol}://${host}`;
   
-  const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
+  const response = await fetch(`${baseUrl}/api/internal/deepseek-proxy`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
     },
     body: JSON.stringify({
       model,
