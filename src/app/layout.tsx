@@ -16,9 +16,12 @@ function readInitialLocaleFromCookie(): Locale {
 
 export const metadata = {
   title:
-    "OpenResume | 开源简历生成与解析 Free Resume Builder & Parser",
+    "PMCV丨产品经理专属简历制作工具",
   description:
-    "OpenResume：免费开源的专业简历生成器；亦可解析 PDF 简历并检测 ATS 可读性。Free, open-source resume builder and parser for ATS-friendly PDFs.",
+    "PMCV：免费开源的产品经理简历生成器；亦可解析 PDF 简历并检测 ATS 可读性。",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
